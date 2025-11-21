@@ -50,8 +50,8 @@ export default function ParticlePracticeComp(){
         if(particle === grammarArray[randomIndex].particle){
             getNewRandomIndex();
             resetTimer();
+            setCounter(counter+1);
         }
-        setCounter(counter+1);
     }
 
     const startTimer = useCallback(() =>{
@@ -116,14 +116,14 @@ export default function ParticlePracticeComp(){
                 </div>      
             )}
             {mode === "easy" && (
-                <div className="flex flex-bold w-full">
-                    <div className="flex flex-row text-black font-bold self-center text-center">
-                        <p className="text-center self-center text-md">{counter}. {currentTranslation}</p>
-                        <p className="">{(totalTime / 1000).toFixed(0)}</p>
+                <div className="flex flex-col w-full">
+                    <div className="flex flex-row text-black font-bold">
+                        <p className="text-md">{counter}. {currentSentence}</p>
+                        <p className="ml-auto">{(totalTime / 1000).toFixed(0)}</p>
                     </div>
 
                     <div className="flex mx-4 w-75 h-15 self-center items-center justify-center">
-                        <p className="text-center text-black">{currentSentence}</p>
+                        <p className="text-center text-black">{currentTranslation}</p>
                     </div>
                             
                     <div className="grid grid-flow-dense grid-rows-2 grid-cols-2 gap-2">
