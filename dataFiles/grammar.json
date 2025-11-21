@@ -1,0 +1,20 @@
+[ 
+    { 
+        "id": "1", 
+        "sentence": "今日は1.03時間で三百六七枚のカードを勉強しました", 
+        "particle": "を", 
+        "verb":"勉強しました", 
+        "category": "object", 
+        "translation": "Today, I studied 367 cards in 1.03 hours." 
+    },
+    
+    {
+        "id": "2",
+        "sentence": "ボルドーはワインの生産で有名だ。",
+        "particle": "の",
+        "verb":"だ",
+        "category": "possession",
+        "translation": "Bordeau is famous for wine production."
+
+    }
+]

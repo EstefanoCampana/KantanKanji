@@ -26,7 +26,7 @@ export default function KanaDrillComp(){
             const newIndex = Math.floor(Math.random() * kanaArray.length);
             setRandomIndex(newIndex);
         }
-    const handleInput = (event) => {setInputText(event.target.value)};
+    const handleInput = (event) => {setInputText(event.target.value.toLowerCase())};
     
     const handleOnlyKatakana = () => {
         setOnlyKatakana(prev => !prev);
