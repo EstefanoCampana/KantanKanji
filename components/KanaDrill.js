@@ -1,7 +1,7 @@
 "use client"
 
+import { getKana } from "@/app/services/kantankanji-services";
 import { useState, useEffect, useMemo } from "react";
-import fullKana from "../dataFiles/kana_full.json";
 
 export default function KanaDrillComp(){
 
@@ -9,16 +9,18 @@ export default function KanaDrillComp(){
     const [randomIndex, setRandomIndex] = useState(null);
     const [onlyHiragana, setOnlyHiragana] = useState(false);
     const [onlyKatakana, setOnlyKatakana] = useState(false);
+    const [fullKana, setFullKana] = useState([]);
 
     const kanaArray = useMemo(() =>{
+        let filtered = [...fullKana]
         if (onlyHiragana){
-            return fullKana.filter((kana) => kana.category.startsWith("hira"));
+            return filtered.filter((kana) => kana.category.startsWith("hira"));
         }
         if (onlyKatakana){
-            return fullKana.filter((kana) => kana.category.startsWith("kata"));
+            return filtered.filter((kana) => kana.category.startsWith("kata"));
         }
-        return fullKana;
-    }, [onlyHiragana, onlyKatakana])
+        return filtered;
+    }, [onlyHiragana, onlyKatakana, fullKana])
     
     const getNewRandomIndex = () => 
         {
@@ -40,6 +42,7 @@ export default function KanaDrillComp(){
 
     useEffect(() => {
         getNewRandomIndex();
+        getKana(setFullKana);
     }, []);
 
     useEffect(() => {

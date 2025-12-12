@@ -1,0 +1,1042 @@
+[
+  {
+    "character": "あ",
+    "reading": "a",
+    "category": "hirago"
+  },
+  {
+    "character": "い",
+    "reading": "i",
+    "category": "hirago"
+  },
+  {
+    "character": "う",
+    "reading": "u",
+    "category": "hirago"
+  },
+  {
+    "character": "え",
+    "reading": "e",
+    "category": "hirago"
+  },
+  {
+    "character": "お",
+    "reading": "o",
+    "category": "hirago"
+  },
+  {
+    "character": "か",
+    "reading": "ka",
+    "category": "hirago"
+  },
+  {
+    "character": "き",
+    "reading": "ki",
+    "category": "hirago"
+  },
+  {
+    "character": "く",
+    "reading": "ku",
+    "category": "hirago"
+  },
+  {
+    "character": "け",
+    "reading": "ke",
+    "category": "hirago"
+  },
+  {
+    "character": "こ",
+    "reading": "ko",
+    "category": "hirago"
+  },
+  {
+    "character": "さ",
+    "reading": "sa",
+    "category": "hirago"
+  },
+  {
+    "character": "し",
+    "reading": "shi",
+    "category": "hirago"
+  },
+  {
+    "character": "す",
+    "reading": "su",
+    "category": "hirago"
+  },
+  {
+    "character": "せ",
+    "reading": "se",
+    "category": "hirago"
+  },
+  {
+    "character": "そ",
+    "reading": "so",
+    "category": "hirago"
+  },
+  {
+    "character": "た",
+    "reading": "ta",
+    "category": "hirago"
+  },
+  {
+    "character": "ち",
+    "reading": "chi",
+    "category": "hirago"
+  },
+  {
+    "character": "つ",
+    "reading": "tsu",
+    "category": "hirago"
+  },
+  {
+    "character": "て",
+    "reading": "te",
+    "category": "hirago"
+  },
+  {
+    "character": "と",
+    "reading": "to",
+    "category": "hirago"
+  },
+  {
+    "character": "な",
+    "reading": "na",
+    "category": "hirago"
+  },
+  {
+    "character": "に",
+    "reading": "ni",
+    "category": "hirago"
+  },
+  {
+    "character": "ぬ",
+    "reading": "nu",
+    "category": "hirago"
+  },
+  {
+    "character": "ね",
+    "reading": "ne",
+    "category": "hirago"
+  },
+  {
+    "character": "の",
+    "reading": "no",
+    "category": "hirago"
+  },
+  {
+    "character": "は",
+    "reading": "ha",
+    "category": "hirago"
+  },
+  {
+    "character": "ひ",
+    "reading": "hi",
+    "category": "hirago"
+  },
+  {
+    "character": "ふ",
+    "reading": "fu",
+    "category": "hirago"
+  },
+  {
+    "character": "へ",
+    "reading": "he",
+    "category": "hirago"
+  },
+  {
+    "character": "ほ",
+    "reading": "ho",
+    "category": "hirago"
+  },
+  {
+    "character": "ま",
+    "reading": "ma",
+    "category": "hirago"
+  },
+  {
+    "character": "み",
+    "reading": "mi",
+    "category": "hirago"
+  },
+  {
+    "character": "む",
+    "reading": "mu",
+    "category": "hirago"
+  },
+  {
+    "character": "め",
+    "reading": "me",
+    "category": "hirago"
+  },
+  {
+    "character": "も",
+    "reading": "mo",
+    "category": "hirago"
+  },
+  {
+    "character": "や",
+    "reading": "ya",
+    "category": "hirago"
+  },
+  {
+    "character": "ゆ",
+    "reading": "yu",
+    "category": "hirago"
+  },
+  {
+    "character": "よ",
+    "reading": "yo",
+    "category": "hirago"
+  },
+  {
+    "character": "ら",
+    "reading": "ra",
+    "category": "hirago"
+  },
+  {
+    "character": "り",
+    "reading": "ri",
+    "category": "hirago"
+  },
+  {
+    "character": "る",
+    "reading": "ru",
+    "category": "hirago"
+  },
+  {
+    "character": "れ",
+    "reading": "re",
+    "category": "hirago"
+  },
+  {
+    "character": "ろ",
+    "reading": "ro",
+    "category": "hirago"
+  },
+  {
+    "character": "わ",
+    "reading": "wa",
+    "category": "hirago"
+  },
+  {
+    "character": "を",
+    "reading": "wo",
+    "category": "hirago"
+  },
+  {
+    "character": "ん",
+    "reading": "n",
+    "category": "hirago"
+  },
+  {
+    "character": "が",
+    "reading": "ga",
+    "category": "hirada"
+  },
+  {
+    "character": "ぎ",
+    "reading": "gi",
+    "category": "hirada"
+  },
+  {
+    "character": "ぐ",
+    "reading": "gu",
+    "category": "hirada"
+  },
+  {
+    "character": "げ",
+    "reading": "ge",
+    "category": "hirada"
+  },
+  {
+    "character": "ご",
+    "reading": "go",
+    "category": "hirada"
+  },
+  {
+    "character": "ざ",
+    "reading": "za",
+    "category": "hirada"
+  },
+  {
+    "character": "じ",
+    "reading": "ji",
+    "category": "hirada"
+  },
+  {
+    "character": "ず",
+    "reading": "zu",
+    "category": "hirada"
+  },
+  {
+    "character": "ぜ",
+    "reading": "ze",
+    "category": "hirada"
+  },
+  {
+    "character": "ぞ",
+    "reading": "zo",
+    "category": "hirada"
+  },
+  {
+    "character": "だ",
+    "reading": "da",
+    "category": "hirada"
+  },
+  {
+    "character": "ぢ",
+    "reading": "ji",
+    "category": "hirada"
+  },
+  {
+    "character": "づ",
+    "reading": "zu",
+    "category": "hirada"
+  },
+  {
+    "character": "で",
+    "reading": "de",
+    "category": "hirada"
+  },
+  {
+    "character": "ど",
+    "reading": "do",
+    "category": "hirada"
+  },
+  {
+    "character": "ば",
+    "reading": "ba",
+    "category": "hirada"
+  },
+  {
+    "character": "び",
+    "reading": "bi",
+    "category": "hirada"
+  },
+  {
+    "character": "ぶ",
+    "reading": "bu",
+    "category": "hirada"
+  },
+  {
+    "character": "べ",
+    "reading": "be",
+    "category": "hirada"
+  },
+  {
+    "character": "ぼ",
+    "reading": "bo",
+    "category": "hirada"
+  },
+  {
+    "character": "ぱ",
+    "reading": "pa",
+    "category": "hiraha"
+  },
+  {
+    "character": "ぴ",
+    "reading": "pi",
+    "category": "hiraha"
+  },
+  {
+    "character": "ぷ",
+    "reading": "pu",
+    "category": "hiraha"
+  },
+  {
+    "character": "ぺ",
+    "reading": "pe",
+    "category": "hiraha"
+  },
+  {
+    "character": "ぽ",
+    "reading": "po",
+    "category": "hiraha"
+  },
+  {
+    "character": "きゃ",
+    "reading": "kya",
+    "category": "hirayo"
+  },
+  {
+    "character": "きゅ",
+    "reading": "kyu",
+    "category": "hirayo"
+  },
+  {
+    "character": "きょ",
+    "reading": "kyo",
+    "category": "hirayo"
+  },
+  {
+    "character": "しゃ",
+    "reading": "sha",
+    "category": "hirayo"
+  },
+  {
+    "character": "しゅ",
+    "reading": "shu",
+    "category": "hirayo"
+  },
+  {
+    "character": "しょ",
+    "reading": "sho",
+    "category": "hirayo"
+  },
+  {
+    "character": "ちゃ",
+    "reading": "cha",
+    "category": "hirayo"
+  },
+  {
+    "character": "ちゅ",
+    "reading": "chu",
+    "category": "hirayo"
+  },
+  {
+    "character": "ちょ",
+    "reading": "cho",
+    "category": "hirayo"
+  },
+  {
+    "character": "にゃ",
+    "reading": "nya",
+    "category": "hirayo"
+  },
+  {
+    "character": "にゅ",
+    "reading": "nyu",
+    "category": "hirayo"
+  },
+  {
+    "character": "にょ",
+    "reading": "nyo",
+    "category": "hirayo"
+  },
+  {
+    "character": "ひゃ",
+    "reading": "hya",
+    "category": "hirayo"
+  },
+  {
+    "character": "ひゅ",
+    "reading": "hyu",
+    "category": "hirayo"
+  },
+  {
+    "character": "ひょ",
+    "reading": "hyo",
+    "category": "hirayo"
+  },
+  {
+    "character": "みゃ",
+    "reading": "mya",
+    "category": "hirayo"
+  },
+  {
+    "character": "みゅ",
+    "reading": "myu",
+    "category": "hirayo"
+  },
+  {
+    "character": "みょ",
+    "reading": "myo",
+    "category": "hirayo"
+  },
+  {
+    "character": "りゃ",
+    "reading": "rya",
+    "category": "hirayo"
+  },
+  {
+    "character": "りゅ",
+    "reading": "ryu",
+    "category": "hirayo"
+  },
+  {
+    "character": "りょ",
+    "reading": "ryo",
+    "category": "hirayo"
+  },
+  {
+    "character": "ぎゃ",
+    "reading": "gya",
+    "category": "hirayo"
+  },
+  {
+    "character": "ぎゅ",
+    "reading": "gyu",
+    "category": "hirayo"
+  },
+  {
+    "character": "ぎょ",
+    "reading": "gyo",
+    "category": "hirayo"
+  },
+  {
+    "character": "じゃ",
+    "reading": "ja",
+    "category": "hirayo"
+  },
+  {
+    "character": "じゅ",
+    "reading": "ju",
+    "category": "hirayo"
+  },
+  {
+    "character": "じょ",
+    "reading": "jo",
+    "category": "hirayo"
+  },
+  {
+    "character": "びゃ",
+    "reading": "bya",
+    "category": "hirayo"
+  },
+  {
+    "character": "びゅ",
+    "reading": "byu",
+    "category": "hirayo"
+  },
+  {
+    "character": "びょ",
+    "reading": "byo",
+    "category": "hirayo"
+  },
+  {
+    "character": "ぴゃ",
+    "reading": "pya",
+    "category": "hirayo"
+  },
+  {
+    "character": "ぴゅ",
+    "reading": "pyu",
+    "category": "hirayo"
+  },
+  {
+    "character": "ぴょ",
+    "reading": "pyo",
+    "category": "hirayo"
+  },
+  {
+    "character": "ア",
+    "reading": "a",
+    "category": "katago"
+  },
+  {
+    "character": "イ",
+    "reading": "i",
+    "category": "katago"
+  },
+  {
+    "character": "ウ",
+    "reading": "u",
+    "category": "katago"
+  },
+  {
+    "character": "エ",
+    "reading": "e",
+    "category": "katago"
+  },
+  {
+    "character": "オ",
+    "reading": "o",
+    "category": "katago"
+  },
+  {
+    "character": "カ",
+    "reading": "ka",
+    "category": "katago"
+  },
+  {
+    "character": "キ",
+    "reading": "ki",
+    "category": "katago"
+  },
+  {
+    "character": "ク",
+    "reading": "ku",
+    "category": "katago"
+  },
+  {
+    "character": "ケ",
+    "reading": "ke",
+    "category": "katago"
+  },
+  {
+    "character": "コ",
+    "reading": "ko",
+    "category": "katago"
+  },
+  {
+    "character": "サ",
+    "reading": "sa",
+    "category": "katago"
+  },
+  {
+    "character": "シ",
+    "reading": "shi",
+    "category": "katago"
+  },
+  {
+    "character": "ス",
+    "reading": "su",
+    "category": "katago"
+  },
+  {
+    "character": "セ",
+    "reading": "se",
+    "category": "katago"
+  },
+  {
+    "character": "ソ",
+    "reading": "so",
+    "category": "katago"
+  },
+  {
+    "character": "タ",
+    "reading": "ta",
+    "category": "katago"
+  },
+  {
+    "character": "チ",
+    "reading": "chi",
+    "category": "katago"
+  },
+  {
+    "character": "ツ",
+    "reading": "tsu",
+    "category": "katago"
+  },
+  {
+    "character": "テ",
+    "reading": "te",
+    "category": "katago"
+  },
+  {
+    "character": "ト",
+    "reading": "to",
+    "category": "katago"
+  },
+  {
+    "character": "ナ",
+    "reading": "na",
+    "category": "katago"
+  },
+  {
+    "character": "ニ",
+    "reading": "ni",
+    "category": "katago"
+  },
+  {
+    "character": "ヌ",
+    "reading": "nu",
+    "category": "katago"
+  },
+  {
+    "character": "ネ",
+    "reading": "ne",
+    "category": "katago"
+  },
+  {
+    "character": "ノ",
+    "reading": "no",
+    "category": "katago"
+  },
+  {
+    "character": "ハ",
+    "reading": "ha",
+    "category": "katago"
+  },
+  {
+    "character": "ヒ",
+    "reading": "hi",
+    "category": "katago"
+  },
+  {
+    "character": "フ",
+    "reading": "fu",
+    "category": "katago"
+  },
+  {
+    "character": "ヘ",
+    "reading": "he",
+    "category": "katago"
+  },
+  {
+    "character": "ホ",
+    "reading": "ho",
+    "category": "katago"
+  },
+  {
+    "character": "マ",
+    "reading": "ma",
+    "category": "katago"
+  },
+  {
+    "character": "ミ",
+    "reading": "mi",
+    "category": "katago"
+  },
+  {
+    "character": "ム",
+    "reading": "mu",
+    "category": "katago"
+  },
+  {
+    "character": "メ",
+    "reading": "me",
+    "category": "katago"
+  },
+  {
+    "character": "モ",
+    "reading": "mo",
+    "category": "katago"
+  },
+  {
+    "character": "ヤ",
+    "reading": "ya",
+    "category": "katago"
+  },
+  {
+    "character": "ユ",
+    "reading": "yu",
+    "category": "katago"
+  },
+  {
+    "character": "ヨ",
+    "reading": "yo",
+    "category": "katago"
+  },
+  {
+    "character": "ラ",
+    "reading": "ra",
+    "category": "katago"
+  },
+  {
+    "character": "リ",
+    "reading": "ri",
+    "category": "katago"
+  },
+  {
+    "character": "ル",
+    "reading": "ru",
+    "category": "katago"
+  },
+  {
+    "character": "レ",
+    "reading": "re",
+    "category": "katago"
+  },
+  {
+    "character": "ロ",
+    "reading": "ro",
+    "category": "katago"
+  },
+  {
+    "character": "ワ",
+    "reading": "wa",
+    "category": "katago"
+  },
+  {
+    "character": "ヲ",
+    "reading": "wo",
+    "category": "katago"
+  },
+  {
+    "character": "ン",
+    "reading": "n",
+    "category": "katago"
+  },
+  {
+    "character": "ガ",
+    "reading": "ga",
+    "category": "katada"
+  },
+  {
+    "character": "ギ",
+    "reading": "gi",
+    "category": "katada"
+  },
+  {
+    "character": "グ",
+    "reading": "gu",
+    "category": "katada"
+  },
+  {
+    "character": "ゲ",
+    "reading": "ge",
+    "category": "katada"
+  },
+  {
+    "character": "ゴ",
+    "reading": "go",
+    "category": "katada"
+  },
+  {
+    "character": "ザ",
+    "reading": "za",
+    "category": "katada"
+  },
+  {
+    "character": "ジ",
+    "reading": "ji",
+    "category": "katada"
+  },
+  {
+    "character": "ズ",
+    "reading": "zu",
+    "category": "katada"
+  },
+  {
+    "character": "ゼ",
+    "reading": "ze",
+    "category": "katada"
+  },
+  {
+    "character": "ゾ",
+    "reading": "zo",
+    "category": "katada"
+  },
+  {
+    "character": "ダ",
+    "reading": "da",
+    "category": "katada"
+  },
+  {
+    "character": "ヂ",
+    "reading": "ji",
+    "category": "katada"
+  },
+  {
+    "character": "ヅ",
+    "reading": "zu",
+    "category": "katada"
+  },
+  {
+    "character": "デ",
+    "reading": "de",
+    "category": "katada"
+  },
+  {
+    "character": "ド",
+    "reading": "do",
+    "category": "katada"
+  },
+  {
+    "character": "バ",
+    "reading": "ba",
+    "category": "katada"
+  },
+  {
+    "character": "ビ",
+    "reading": "bi",
+    "category": "katada"
+  },
+  {
+    "character": "ブ",
+    "reading": "bu",
+    "category": "katada"
+  },
+  {
+    "character": "ベ",
+    "reading": "be",
+    "category": "katada"
+  },
+  {
+    "character": "ボ",
+    "reading": "bo",
+    "category": "katada"
+  },
+  {
+    "character": "パ",
+    "reading": "pa",
+    "category": "kataha"
+  },
+  {
+    "character": "ピ",
+    "reading": "pi",
+    "category": "kataha"
+  },
+  {
+    "character": "プ",
+    "reading": "pu",
+    "category": "kataha"
+  },
+  {
+    "character": "ペ",
+    "reading": "pe",
+    "category": "kataha"
+  },
+  {
+    "character": "ポ",
+    "reading": "po",
+    "category": "kataha"
+  },
+  {
+    "character": "キャ",
+    "reading": "kya",
+    "category": "katayo"
+  },
+  {
+    "character": "キュ",
+    "reading": "kyu",
+    "category": "katayo"
+  },
+  {
+    "character": "キョ",
+    "reading": "kyo",
+    "category": "katayo"
+  },
+  {
+    "character": "シャ",
+    "reading": "sha",
+    "category": "katayo"
+  },
+  {
+    "character": "シュ",
+    "reading": "shu",
+    "category": "katayo"
+  },
+  {
+    "character": "ショ",
+    "reading": "sho",
+    "category": "katayo"
+  },
+  {
+    "character": "チャ",
+    "reading": "cha",
+    "category": "katayo"
+  },
+  {
+    "character": "チュ",
+    "reading": "chu",
+    "category": "katayo"
+  },
+  {
+    "character": "チョ",
+    "reading": "cho",
+    "category": "katayo"
+  },
+  {
+    "character": "ニャ",
+    "reading": "nya",
+    "category": "katayo"
+  },
+  {
+    "character": "ニュ",
+    "reading": "nyu",
+    "category": "katayo"
+  },
+  {
+    "character": "ニョ",
+    "reading": "nyo",
+    "category": "katayo"
+  },
+  {
+    "character": "ヒャ",
+    "reading": "hya",
+    "category": "katayo"
+  },
+  {
+    "character": "ヒュ",
+    "reading": "hyu",
+    "category": "katayo"
+  },
+  {
+    "character": "ヒョ",
+    "reading": "hyo",
+    "category": "katayo"
+  },
+  {
+    "character": "ミャ",
+    "reading": "mya",
+    "category": "katayo"
+  },
+  {
+    "character": "ミュ",
+    "reading": "myu",
+    "category": "katayo"
+  },
+  {
+    "character": "ミョ",
+    "reading": "myo",
+    "category": "katayo"
+  },
+  {
+    "character": "リャ",
+    "reading": "rya",
+    "category": "katayo"
+  },
+  {
+    "character": "リュ",
+    "reading": "ryu",
+    "category": "katayo"
+  },
+  {
+    "character": "リョ",
+    "reading": "ryo",
+    "category": "katayo"
+  },
+  {
+    "character": "ギャ",
+    "reading": "gya",
+    "category": "katayo"
+  },
+  {
+    "character": "ギュ",
+    "reading": "gyu",
+    "category": "katayo"
+  },
+  {
+    "character": "ギョ",
+    "reading": "gyo",
+    "category": "katayo"
+  },
+  {
+    "character": "ジャ",
+    "reading": "ja",
+    "category": "katayo"
+  },
+  {
+    "character": "ジュ",
+    "reading": "ju",
+    "category": "katayo"
+  },
+  {
+    "character": "ジョ",
+    "reading": "jo",
+    "category": "katayo"
+  },
+  {
+    "character": "ビャ",
+    "reading": "bya",
+    "category": "katayo"
+  },
+  {
+    "character": "ビュ",
+    "reading": "byu",
+    "category": "katayo"
+  },
+  {
+    "character": "ビョ",
+    "reading": "byo",
+    "category": "katayo"
+  },
+  {
+    "character": "ピャ",
+    "reading": "pya",
+    "category": "katayo"
+  },
+  {
+    "character": "ピュ",
+    "reading": "pyu",
+    "category": "katayo"
+  },
+  {
+    "character": "ピョ",
+    "reading": "pyo",
+    "category": "katayo"
+  }
+]
