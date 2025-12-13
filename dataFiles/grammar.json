@@ -402,9 +402,9 @@
   {
     "id": "51",
     "sentence": "彼はもう帰りました。",
-    "particle": "も",
+    "particle": "は",
     "verb": "帰りました",
-    "category": "also",
+    "category": "topic",
     "translation": "He's already gone home."
   },
   {

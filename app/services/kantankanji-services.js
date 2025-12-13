@@ -47,6 +47,11 @@ export async function getSentences() {
 
 }
 
+export async function getNotNullSentences() {
+
+}
+
+
 export async function addKanji() {
 
 }

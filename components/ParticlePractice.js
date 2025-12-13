@@ -3,7 +3,6 @@ import { useMemo, useState, useEffect, useRef, useCallback } from "react"
 import grammar from "../dataFiles/grammar.json"
 import { TimerOff } from "lucide";
 import { getParticles } from "@/app/services/kantankanji-services";
-import { querySnapshotFromJSON } from "firebase/firestore";
 
 export default function ParticlePracticeComp() {
     const INITIAL_TIME = 15 * 1000;
@@ -17,10 +16,8 @@ export default function ParticlePracticeComp() {
     const [inputText, setInputText] = useState("");
     const [inputNumber, setInputNumber] = useState(10);
     const [questionsArray, setQuestionsArray] = useState([]);
-    const [answersArray, setAnswersArray] = useState([]); 
-
-    const currentSentence = useRef(null);
-    const currentTranslation = useRef(null);
+    const [resultCount, setResultCount] = useState(0);
+    const [resultsArray, setResultsArray] = useState([]);
     
     useEffect(() => {
         if(mode == null) return;
@@ -33,29 +30,24 @@ export default function ParticlePracticeComp() {
         setCounter(0);
     }, [mode, grammarArray, inputNumber])
 
-    useEffect(() => {
-        if (
-            counter == null ||
-            !questionsArray[counter] ||
-            particleArray.length === 0
-        ) {
-            currentSentence.current = null;
-            currentTranslation.current = null;
-            setAnswersArray([]);
-            return;
-            }
-        }, []
-    )
-   useEffect(() => {
-    console.log(questionsArray)
+   const currentQuestion = useMemo(() => {
+    if (counter == null || !questionsArray[counter]) return;
+    return questionsArray[counter];
+   }, [counter, questionsArray]);
+
+   const blurredSentence = useMemo(() => {
+    if(!currentQuestion) return;
+    return currentQuestion.sentence.replace(currentQuestion.particle, "__");
+   }, [currentQuestion]);
+
+   const translation = currentQuestion?.translation ?? null;
+
+   const answersArray = useMemo(() => {
         if(counter == null || !questionsArray[counter] || particleArray.length === 0) return;
-        const correct = questionsArray[counter].particle;
+        const correct = currentQuestion.particle;
         const incorrect = particleArray.filter(p => p !== correct).sort(() => Math.random() - 0.5).slice(0,3);
-        const answers = [correct, ...incorrect].sort(() => Math.random() - 0.5);
-        currentSentence.current = questionsArray[counter].sentence.replace(correct, "‎__‎");
-        currentTranslation.current = questionsArray[counter].translation;
-        setAnswersArray(answers);
-    }, [particleArray, questionsArray, counter])
+        return [correct, ...incorrect].sort(() => Math.random() - 0.5);
+    }, [currentQuestion, particleArray])
     
     const handleTextInput = (event) => {
         setInputText(event.target.value);
@@ -73,15 +65,31 @@ export default function ParticlePracticeComp() {
             if (inputText === questionsArray[counter].particle) {
                 resetTimer();
                 setInputText("");
-                setCounter(prev => prev + 1 < questionsArray.length ? prev + 1 : prev);
+                setCounter(prev => prev + 1);
+                setResultCount(prev => prev + 1);
             }
         }
     }
 
     const handleInput = (particle) => {
-        if (particle === questionsArray[counter].particle) {
+        if (particle === questionsArray[counter].particle)
+        {
             resetTimer();
-            setCounter(prev => prev + 1 < questionsArray.length ? prev + 1 : prev);
+            setCounter(prev => prev + 1);
+            setResultCount(prev => prev + 1);
+        }
+        else
+        {
+            let wrongArray = []
+            let wrongAnswer = {
+                id: questionsArray[counter].id,
+                particleW: particle,
+                sentence: questionsArray[counter].sentence
+            }
+            wrongArray.push(wrongAnswer)
+            resetTimer();
+            setCounter(prev => prev + 1);
+            setResultsArray(wrongArray);
         }
     }
 
@@ -113,7 +121,7 @@ export default function ParticlePracticeComp() {
     useEffect(() => {
         if(totalTime == 0) {
             resetTimer();
-            setCounter(prev => prev + 1 < questionsArray.length ? prev + 1 : prev);
+            setCounter(prev => prev + 1);
         };
     }, [totalTime]);
 
@@ -126,6 +134,21 @@ export default function ParticlePracticeComp() {
         resetTimer();
         return () => clearInterval(timerRef.current);
     }, [mode, resetTimer]);
+
+    useEffect(() => {
+        if(counter !== null && questionsArray.length > 0 && counter >= questionsArray.length){
+            resetTimer();
+            setMode("results");
+            console.log(resultsArray);
+        }
+    }, [counter, questionsArray]);
+
+    useEffect(() => {
+        if(mode == null){
+            setResultCount(0);
+            setInputNumber(10);
+        }
+    }, [mode])
 
 
     return (
@@ -141,21 +164,21 @@ export default function ParticlePracticeComp() {
                             <button onClick={() => setMode("hard")} className="px-5 py-2 rounded-md bg-red-500 font-black hover:bg-red-500/50">Hard</button>
                         )}
                     </div>
-                    <div className="flex justify-center">
-                        <label className="text-md text-black pr-1">No. Questions: </label>
-                        <input onChange={handleNumberInput} min="0" type="number" placeholder="10" className="border border-black text-center text-black rounded-lg"></input>
+                    <div className="flex justify-center items-center bg-white rounded-lg p-2">
+                        <label className="text-md text-black font-semibold pr-1">No. Questions: </label>
+                        <input onChange={handleNumberInput} min="0" type="number" placeholder="10" className="border-black text-center border-2 text-black rounded-lg"></input>
                     </div>
                 </div>
             )}
             {mode === "easy" && (
                 <div className="flex flex-col w-full">
                     <div className="flex flex-row text-black ">
-                        <p className="text-md">{counter+1}. {currentTranslation.current}</p>
+                        <p className="text-md">{counter+1}. {translation}</p>
                         <p className="ml-auto font-bold">{(totalTime / 1000).toFixed(0)}</p>
                     </div>
 
                     <div className="flex mx-4 p-5 m-5 self-center items-center justify-center bg-gray-300 rounded-2xl border-2 border-black">
-                        <p className="text-center text-black font-bold">{currentSentence.current}</p>
+                        <p className="text-center text-black font-bold">{blurredSentence}</p>
                     </div>
 
                     <div className="grid grid-flow-dense grid-rows-2 grid-cols-2 gap-2">
@@ -168,17 +191,32 @@ export default function ParticlePracticeComp() {
             {mode === "hard" && (
                 <div className="flex flex-col w-full">
                     <div className="flex flex-row text-black ">
-                        <p className="text-md">{counter+1}. {currentTranslation.current}</p>
+                        <p className="text-md">{counter+1}. {translation}</p>
                         <p className="ml-auto font-bold">{(totalTime / 1000).toFixed(0)}</p>
                     </div>
 
                     <div className="flex mx-4 p-5 m-5 self-center items-center justify-center bg-gray-300 rounded-2xl border-2 border-black">
-                        <p className="text-center text-black font-bold">{currentSentence.current}</p>
+                        <p className="text-center text-black font-bold">{blurredSentence}</p>
                     </div>
 
                     <div className="flex items-center justify-center">
                         <input placeholder="入力" onChange={handleTextInput} onKeyDown={handleKeyDown} value={inputText} className="border-2 border-black align-middle text-center text-black"></input>
                     </div>
+                </div>
+            )}
+            {mode === "results" && (
+                <div className="flex flex-col w-full">
+                    <p className="text-2xl font-black text-black text-center">Results!</p>
+                    <div className="flex flex-col text-black p-5 ">
+                        <p className="text-md font-bold">Questions Answered: {resultCount} / {inputNumber}</p>
+                        <p className="font-bold text-md">Wrong Answers: {inputNumber - resultCount}</p>
+                        <div>
+                            {resultsArray?.map((sentence, id) => (
+                                <p className="py-1" key={id}>{sentence.sentence}</p>
+                            ))}
+                        </div>
+                    </div>
+                    <button className="bg-black hover:bg-black/90 text-white font-black p-5 rounded-2xl" onClick={() => setMode(null)}>Return Home</button>
                 </div>
             )}
         </div>
