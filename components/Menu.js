@@ -6,6 +6,7 @@ export default function MenuComp({ closeNav }) {
             <div onClick={(event) => event.stopPropagation()} className="w-1/2 md:flex-1 flex flex-col bg-[#808080] p-4 gap-4">
                 <Link className="mx-4" href="/">Home</Link>
                 <Link className="mx-4" href="./hiraganaDrill/">Hiragana Drill</Link>
+                <Link className="mx-4" href="./kanjiPractice/">Kanji Practice</Link>
                 <Link className="mx-4" href="./particlePractice/">Particle Practice</Link>
             </div>
         </div>

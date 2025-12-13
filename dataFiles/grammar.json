@@ -426,9 +426,9 @@
   {
     "id": "54",
     "sentence": "あの大きい建物は何ですか。",
-    "particle": "の",
+    "particle": "は",
     "verb": "です",
-    "category": "possessive",
+    "category": "topic",
     "translation": "What's that big building?"
   },
   {
