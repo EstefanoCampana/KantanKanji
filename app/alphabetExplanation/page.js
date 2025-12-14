@@ -2,23 +2,12 @@
 import NavBarComp from "@/components/NavBar";
 import { useNavBar } from "@/utils/navBarProvider";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 
 
 export default function Page() {
-        const [navBarStyle, setNavBarStyle] = useState("flex flex-col items-center p-5")
         const { boolClick } = useNavBar();
-
-        useEffect(() => {
-                if (boolClick == true) {
-                        setNavBarStyle("flex flex-col items-center p-5 h-screen overflow-hidden")
-                }
-                else {
-                        setNavBarStyle("flex flex-col items-center p-5")
-                }
-        }, [boolClick])
         return (
-                <main className={navBarStyle}>
+                <main className={`flex flex-col items-center p-5 min-h-dvh w-full ${boolClick ? "overflow-hidden" : "overflow-y-auto"}`}>
                         <NavBarComp />
                         <div className="md:w-1/2">
                                 <p className="text-3xl font-black text-center p-4">Brief Explanation About Japanese Alphabet</p>

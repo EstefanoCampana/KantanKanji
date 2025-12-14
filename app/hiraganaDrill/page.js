@@ -4,24 +4,12 @@ import KanaDrillComp from "@/components/KanaDrill";
 import NavBarComp from "@/components/NavBar";
 import { useNavBar } from "@/utils/navBarProvider";
 import Link from "next/link"
-import { useEffect, useState } from "react";
 export default function Page() {
 
-  const [navBarStyle, setNavBarStyle] = useState("flex flex-col items-center p-5")
   const { boolClick } = useNavBar();
 
-  useEffect(() => {
-    if (boolClick == true) {
-      setNavBarStyle("flex flex-col items-center p-5 h-screen overflow-hidden")
-    }
-    else {
-      setNavBarStyle("flex flex-col items-center p-5")
-    }
-  }, [boolClick])
-
-
   return (
-    <main className={navBarStyle}>
+        <main className={`flex flex-col items-center p-5 min-h-dvh w-full ${boolClick ? "overflow-hidden" : "overflow-y-auto"}`}>
       <NavBarComp />
       <div className="md:w-1/2">
         <p className="text-center text-3xl p-4 font-black">Hiragana & Katakana Drill</p>
@@ -33,7 +21,9 @@ export default function Page() {
           <Link href="./alphabetExplanation/" target="_blank" className="underline text-[hsl(205,67%,62%)] ml-1">japanese alphabet.
           </Link>
         </p>
-        <KanaDrillComp />
+        <div className="mx-auto w-full p-4 md:p-5">
+          <KanaDrillComp />
+        </div>
         <h1 className="text-center p-1">
           <p className="font-bold">How it works</p>
           Just type the reading of the kana shown on screen in romaji, if you get it right another random kana will appear on screen.

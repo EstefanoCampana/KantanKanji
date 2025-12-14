@@ -2,28 +2,20 @@
 import NavBarComp from "@/components/NavBar";
 import ParticlePracticeComp from "@/components/ParticlePractice";
 import { useNavBar } from "@/utils/navBarProvider";
-import { useEffect, useState } from "react";
 
 export default function Page() {
-
-    const [navBarStyle, setNavBarStyle] = useState("flex flex-col items-center p-5")
     const { boolClick } = useNavBar();
 
-    useEffect(() => {
-        if (boolClick == true) {
-            setNavBarStyle("flex flex-col items-center p-5 h-screen overflow-hidden")
-        }
-        else {
-            setNavBarStyle("flex flex-col items-center p-5")
-        }
-    }, [boolClick])
     return (
-        <main className={navBarStyle}>
+        <main className={`flex flex-col items-center p-5 min-h-dvh w-full ${boolClick ? "overflow-hidden" : "overflow-y-auto"}`}>
             <NavBarComp />
-            <div className="md:w-1/2">
+            <div className="flex-1 w-full md:w-1/2 overflow-y-auto overscroll-contain">
                 <p className=" text-3xl font-black text-center p-4">Particle Practice</p>
                 <p className="text-center">On this page you will be able to practice the usage of the different japanese particles.</p>
-                <ParticlePracticeComp />
+                <div className="mx-auto w-full p-4 md:p-5">
+                    <ParticlePracticeComp />
+                </div>
+
                 <p className="font-bold text-center">How it works</p>
                 <h1 className="text-center p-1">
                     After pressing start, you can select the difficulty for the test, it can be either easy or hard. You will have 15 seconds to then input the correct particle needed on the sentence.

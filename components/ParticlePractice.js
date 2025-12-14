@@ -1,8 +1,8 @@
 "use client"
 import { useMemo, useState, useEffect, useRef, useCallback } from "react"
 import grammar from "../dataFiles/grammar.json"
-import { TimerOff } from "lucide";
 import { getParticles } from "@/app/services/kantankanji-services";
+import { GrCaretNext, GrCaretPrevious } from "react-icons/gr";
 
 export default function ParticlePracticeComp() {
     const INITIAL_TIME = 15 * 1000;
@@ -18,6 +18,7 @@ export default function ParticlePracticeComp() {
     const [questionsArray, setQuestionsArray] = useState([]);
     const [resultCount, setResultCount] = useState(0);
     const [resultsArray, setResultsArray] = useState([]);
+    const [resultsArrayInd, setResultsArrayInd] = useState(0);
     
     useEffect(() => {
         if(mode == null) return;
@@ -67,6 +68,17 @@ export default function ParticlePracticeComp() {
                 setInputText("");
                 setCounter(prev => prev + 1);
                 setResultCount(prev => prev + 1);
+            }        
+            else
+            {
+                let wrongAnswer = {
+                    particleG: questionsArray[counter].particle,
+                    particleW: inputText,
+                    sentence: blurredSentence
+                }
+                setResultsArray(prev => [...prev,wrongAnswer]);
+                resetTimer();
+                setCounter(prev => prev + 1);
             }
         }
     }
@@ -80,16 +92,14 @@ export default function ParticlePracticeComp() {
         }
         else
         {
-            let wrongArray = []
             let wrongAnswer = {
-                id: questionsArray[counter].id,
+                particleG: questionsArray[counter].particle,
                 particleW: particle,
-                sentence: questionsArray[counter].sentence
+                sentence: blurredSentence
             }
-            wrongArray.push(wrongAnswer)
+            setResultsArray(prev => [...prev,wrongAnswer]);
             resetTimer();
             setCounter(prev => prev + 1);
-            setResultsArray(wrongArray);
         }
     }
 
@@ -109,6 +119,11 @@ export default function ParticlePracticeComp() {
         }, 10);
     }, [])
 
+    const stopTimer = useCallback(() => {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+    }, []);
+
     const resetTimer = useCallback(() => {
         setTotalTime(INITIAL_TIME);
         startTimer();
@@ -122,6 +137,7 @@ export default function ParticlePracticeComp() {
         if(totalTime == 0) {
             resetTimer();
             setCounter(prev => prev + 1);
+            handleInput(totalTime);
         };
     }, [totalTime]);
 
@@ -130,33 +146,37 @@ export default function ParticlePracticeComp() {
     }, [inputNumber]);
 
     useEffect(() => {
-        if (mode == null) return;
-        resetTimer();
+        if (mode === "easy" || mode === "hard") {
+            resetTimer();
+        } else {
+            stopTimer();
+        }
         return () => clearInterval(timerRef.current);
-    }, [mode, resetTimer]);
+    }, [mode, resetTimer, stopTimer]);
 
     useEffect(() => {
         if(counter !== null && questionsArray.length > 0 && counter >= questionsArray.length){
-            resetTimer();
+            stopTimer();
             setMode("results");
-            console.log(resultsArray);
         }
-    }, [counter, questionsArray]);
+    }, [counter, questionsArray, stopTimer]);
 
     useEffect(() => {
         if(mode == null){
+            stopTimer();
             setResultCount(0);
             setInputNumber(10);
+            setResultsArray([]);
         }
     }, [mode])
 
 
     return (
-        <div className="flex flex-col bg-amber-50 my-4 md:px-10 p-5 h-65 justify-center rounded-2xl">
+        <div className="flex flex-col bg-amber-50 md:px-10 p-4 rounded-2xl w-full">
             {mode == null && (
-                <div className="flex flex-col bg-gray-300 rounded-2xl p-5">
+                <div className="flex flex-col bg-gray-300 rounded-2xl p-5 items-center">
                     <p className="text-2xl font-black text-black text-center">Mode Selection</p>
-                    <div className="flex flex-row justify-evenly py-10">
+                    <div className="flex flex-row w-full justify-evenly py-10">
                         {mode !== "easy" && (
                             <button onClick={() => setMode("easy")} className="px-5 py-2 rounded-md bg-green-400 font-black hover:bg-green-400/50">Easy</button>
                         )}
@@ -165,7 +185,7 @@ export default function ParticlePracticeComp() {
                         )}
                     </div>
                     <div className="flex justify-center items-center bg-white rounded-lg p-2">
-                        <label className="text-md text-black font-semibold pr-1">No. Questions: </label>
+                        <label className="text-sm text-black pr-1">No. Questions: </label>
                         <input onChange={handleNumberInput} min="0" type="number" placeholder="10" className="border-black text-center border-2 text-black rounded-lg"></input>
                     </div>
                 </div>
@@ -177,7 +197,7 @@ export default function ParticlePracticeComp() {
                         <p className="ml-auto font-bold">{(totalTime / 1000).toFixed(0)}</p>
                     </div>
 
-                    <div className="flex mx-4 p-5 m-5 self-center items-center justify-center bg-gray-300 rounded-2xl border-2 border-black">
+                    <div className="w-full flex p-4 my-4 self-center items-center justify-center bg-gray-300 rounded-2xl border-2 border-black">
                         <p className="text-center text-black font-bold">{blurredSentence}</p>
                     </div>
 
@@ -195,26 +215,41 @@ export default function ParticlePracticeComp() {
                         <p className="ml-auto font-bold">{(totalTime / 1000).toFixed(0)}</p>
                     </div>
 
-                    <div className="flex mx-4 p-5 m-5 self-center items-center justify-center bg-gray-300 rounded-2xl border-2 border-black">
+                    <div className="w-full flex p-4 my-4 self-center items-center justify-center bg-gray-300 rounded-2xl border-2 border-black">
                         <p className="text-center text-black font-bold">{blurredSentence}</p>
                     </div>
 
                     <div className="flex items-center justify-center">
-                        <input placeholder="入力" onChange={handleTextInput} onKeyDown={handleKeyDown} value={inputText} className="border-2 border-black align-middle text-center text-black"></input>
+                        <input maxLength={3} autoCapitalize="none" autoCorrect="off" placeholder="入力" onChange={handleTextInput} onKeyDown={handleKeyDown} value={inputText} className="border-2 border-black align-middle text-center text-black w-24 pb-[env(safe-area-inset-bottom)]"></input>
                     </div>
                 </div>
             )}
             {mode === "results" && (
-                <div className="flex flex-col w-full">
+                <div className="flex flex-col justify-center items-center">
                     <p className="text-2xl font-black text-black text-center">Results!</p>
                     <div className="flex flex-col text-black p-5 ">
                         <p className="text-md font-bold">Questions Answered: {resultCount} / {inputNumber}</p>
                         <p className="font-bold text-md">Wrong Answers: {inputNumber - resultCount}</p>
-                        <div>
-                            {resultsArray?.map((sentence, id) => (
-                                <p className="py-1" key={id}>{sentence.sentence}</p>
-                            ))}
+                        {resultsArray.length > 0 && (
+                        <div className="flex flex-row m-4">
+                            <GrCaretPrevious className="self-center" onClick={() => setResultsArrayInd((prev) => prev > 0 ? prev - 1 : 0)}/>
+                            <div className="flex flex-col md:flex-row w-full max-w-md border border-black rounded-2xl p-3 gap-3">
+                                <div className="flex flex-col">
+                                    <p className="text-sm font-bold text-center">Question {resultsArrayInd + 1}.</p>
+                                    <p className="text-sm text-center">{resultsArray[resultsArrayInd]?.sentence}</p>
+                                </div>
+                                <div className="flex flex-col">
+                                    <p className="text-sm font-bold text-center">Your Answer</p>
+                                    <p className="text-sm text-center">{resultsArray[resultsArrayInd]?.particleW === 0 ? "‎" : resultsArray[resultsArrayInd]?.particleW}</p>
+                                </div>
+                                <div className="flex flex-col">
+                                    <p className="text-sm font-bold text-center">Actual Answer</p>
+                                    <p className="text-sm text-center">{resultsArray[resultsArrayInd]?.particleG}</p>
+                                </div>
+                            </div>
+                            <GrCaretNext className="self-center" onClick={() => setResultsArrayInd((prev) => prev < resultsArray.length - 1 ? prev + 1 : 0)}/>
                         </div>
+                    )}
                     </div>
                     <button className="bg-black hover:bg-black/90 text-white font-black p-5 rounded-2xl" onClick={() => setMode(null)}>Return Home</button>
                 </div>

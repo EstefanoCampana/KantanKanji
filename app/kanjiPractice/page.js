@@ -3,22 +3,12 @@
 import CheckJapaneseLayoutComp from "@/components/CheckJapaneseLayout";
 import NavBarComp from "@/components/NavBar";
 import { useNavBar } from "@/utils/navBarProvider";
-import { useState, useEffect } from "react";
 
 export default function KanjiPractice(){
-  const [navBarStyle, setNavBarStyle] = useState("flex flex-col items-center p-5")
   const { boolClick } = useNavBar();
 
-  useEffect(() => {
-    if (boolClick == true) {
-      setNavBarStyle("flex flex-col items-center p-5 h-screen overflow-hidden")
-    }
-    else {
-      setNavBarStyle("flex flex-col items-center p-5")
-    }
-  }, [boolClick])
   return(
-    <main className={navBarStyle}>
+    <main className={`flex flex-col items-center p-5 min-h-dvh w-full ${boolClick ? "overflow-hidden" : "overflow-y-auto"}`}>
       <NavBarComp />
       <div className="md:w-1/2">
         <p className="text-center text-3xl p-4 font-black">Kanji Practice</p>
