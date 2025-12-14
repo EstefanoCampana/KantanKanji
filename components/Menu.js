@@ -8,6 +8,7 @@ export default function MenuComp({ closeNav }) {
                 <Link className="mx-4" href="./hiraganaDrill/">Hiragana Drill</Link>
                 <Link className="mx-4" href="./kanjiPractice/">Kanji Practice</Link>
                 <Link className="mx-4" href="./particlePractice/">Particle Practice</Link>
+                <Link className="mx-4" href="./verbPractice/">Verb Practice</Link>
             </div>
         </div>
     )

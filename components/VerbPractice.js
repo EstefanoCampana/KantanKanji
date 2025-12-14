@@ -1,13 +1,12 @@
 "use client"
 import { useMemo, useState, useEffect, useRef, useCallback } from "react"
-import { getParticles, getNotNullSentences } from "@/app/services/kantankanji-services";
+import { getSentences } from "@/app/services/kantankanji-services";
 import { GrCaretNext, GrCaretPrevious } from "react-icons/gr";
 
-export default function ParticlePracticeComp() {
+export default function VerbPracticeComp() {
     const INITIAL_TIME = 15 * 1000;
     const [mode, setMode] = useState(null);
-    const [grammarArray, setGrammarArray] = useState([])
-    const [particleArray, setParticleArray] = useState([])
+    const [verbArray, setVerbArray] = useState([])
     const [counter, setCounter] = useState(null);
     const [totalTime, setTotalTime] = useState(INITIAL_TIME);
     const timerRef = useRef(null);
@@ -20,46 +19,43 @@ export default function ParticlePracticeComp() {
     const [resultsArrayInd, setResultsArrayInd] = useState(0);
     
     useEffect(() => {
-        getParticles(setParticleArray);
-
-        const loadGrammar = async () => {
-            const data = await getNotNullSentences();
-            setGrammarArray(data);
+        const loadKanji = async () => {
+            const data = await getSentences();
+            setVerbArray(data);
         };
-
-        loadGrammar();
+        loadKanji();
     }, []);
 
     useEffect(() => {
-        if(mode == null) return;
-        if (grammarArray.length === 0) return;
-        let random = Math.floor(Math.random() * grammarArray.length);
-        let sliced = [...grammarArray.slice(random, random + inputNumber)]
+        if(mode == null || verbArray.length === 0) return;
+        let random = Math.floor(Math.random() * verbArray.length);
+        let sliced = [...verbArray.slice(random, random + inputNumber)]
         if(sliced.length < inputNumber){
-            sliced = [...sliced,...grammarArray.slice(0,inputNumber - sliced.length)]
+            sliced = [...sliced,...verbArray.slice(0,inputNumber - sliced.length)]
         }
-        setQuestionsArray(sliced.sort(() => Math.random() - 0.5));
+        const shuffled = sliced.sort(() => Math.random() - 0.5);
+        setQuestionsArray(shuffled);
         setCounter(0);
-    }, [mode, grammarArray, inputNumber])
+    }, [mode, verbArray, inputNumber])
 
    const currentQuestion = useMemo(() => {
     if (counter == null || !questionsArray[counter]) return;
     return questionsArray[counter];
    }, [counter, questionsArray]);
 
-   const blurredSentence = useMemo(() => {
+    const blurredSentence = useMemo(() => {
     if(!currentQuestion) return;
-    return currentQuestion.sentence.replace(currentQuestion.particle, "__");
+    return currentQuestion.sentence.replace(currentQuestion.verb, "__");
    }, [currentQuestion]);
 
    const translation = currentQuestion?.translation ?? null;
 
    const answersArray = useMemo(() => {
-        if(counter == null || !questionsArray[counter] || particleArray.length === 0) return;
-        const correct = currentQuestion.particle;
-        const incorrect = particleArray.filter(p => p !== correct).sort(() => Math.random() - 0.5).slice(0,3);
+        if(counter == null || !questionsArray[counter] || verbArray.length === 0) return;
+        const correct = currentQuestion.verb;
+        const incorrect = verbArray.filter(p => p.verb !== correct).sort(() => Math.random() - 0.5).slice(0,3).map(k => k.verb);
         return [correct, ...incorrect].sort(() => Math.random() - 0.5);
-    }, [currentQuestion, particleArray])
+    }, [currentQuestion, verbArray])
     
     const handleTextInput = (event) => {
         setInputText(event.target.value);
@@ -74,7 +70,7 @@ export default function ParticlePracticeComp() {
 
     const handleKeyDown = (event) => {
         if (event.key === "Enter") {
-            if (inputText === questionsArray[counter].particle) {
+            if (inputText === questionsArray[counter].verb) {
                 resetTimer();
                 setInputText("");
                 setCounter(prev => prev + 1);
@@ -83,9 +79,9 @@ export default function ParticlePracticeComp() {
             else
             {
                 let wrongAnswer = {
-                    particleG: questionsArray[counter].particle,
-                    particleW: inputText,
-                    sentence: blurredSentence
+                    verbG: questionsArray[counter].verb,
+                    verbW: inputText,
+                    sentence: questionsArray[counter].sentence
                 }
                 setResultsArray(prev => [...prev,wrongAnswer]);
                 resetTimer();
@@ -94,8 +90,8 @@ export default function ParticlePracticeComp() {
         }
     }
 
-    const handleInput = (particle) => {
-        if (particle === questionsArray[counter].particle)
+    const handleInput = (verb) => {
+        if (verb === questionsArray[counter].verb)
         {
             resetTimer();
             setCounter(prev => prev + 1);
@@ -104,9 +100,9 @@ export default function ParticlePracticeComp() {
         else
         {
             let wrongAnswer = {
-                particleG: questionsArray[counter].particle,
-                particleW: particle,
-                sentence: blurredSentence
+                    verbG: questionsArray[counter].verb,
+                    verbW: verb,
+                    sentence: questionsArray[counter].sentence
             }
             setResultsArray(prev => [...prev,wrongAnswer]);
             resetTimer();
@@ -145,7 +141,6 @@ export default function ParticlePracticeComp() {
         if(totalTime == 0) {
             resetTimer();
             handleInput(totalTime);
-            
         };
     }, [totalTime]);
 
@@ -207,11 +202,11 @@ export default function ParticlePracticeComp() {
                     </div>
 
                     <div className="w-full flex p-4 my-4 self-center items-center justify-center bg-gray-300 rounded-2xl border-2 border-black">
-                        <p className="text-center text-black font-bold">{blurredSentence}</p>
+                        {blurredSentence && <p className="text-center text-black font-bold">{blurredSentence}</p>}
                     </div>
                     <div className="grid grid-flow-dense grid-rows-2 grid-cols-2 gap-2">
-                        {answersArray?.map((particle, id) => (
-                            <button value={particle} onClick={() => handleInput(particle)} className="py-1 rounded-md bg-red-500 border-gray-200 border-2 hover:bg-red-500/50" key={id}>{particle}</button>
+                        {answersArray?.map((verb, id) => (
+                            <button value={verb} onClick={() => handleInput(verb)} className="py-1 rounded-md bg-red-500 border-gray-200 border-2 hover:bg-red-500/50" key={id}>{verb}</button>
                         ))}
                     </div>
                 </div>
@@ -224,11 +219,11 @@ export default function ParticlePracticeComp() {
                     </div>
 
                     <div className="w-full flex p-4 my-4 self-center items-center justify-center bg-gray-300 rounded-2xl border-2 border-black">
-                        <p className="text-center text-black font-bold">{blurredSentence}</p>
+                        {blurredSentence && <p className="text-center text-black font-bold">{blurredSentence}</p>}
                     </div>
 
                     <div className="flex items-center justify-center">
-                        <input maxLength={3} autoCapitalize="none" autoCorrect="off" placeholder="入力" onChange={handleTextInput} onKeyDown={handleKeyDown} value={inputText} className="border-2 border-black align-middle text-center text-black w-24 pb-[env(safe-area-inset-bottom)]"></input>
+                        <input maxLength={12} autoCapitalize="none" autoCorrect="off" placeholder="入力" onChange={handleTextInput} onKeyDown={handleKeyDown} value={inputText} className="border-2 border-black align-middle text-center text-black w-24 pb-[env(safe-area-inset-bottom)]"></input>
                     </div>
                 </div>
             )}
@@ -248,11 +243,11 @@ export default function ParticlePracticeComp() {
                                 </div>
                                 <div className="flex flex-col">
                                     <p className="text-sm font-bold text-center">Your Answer</p>
-                                    <p className="text-sm text-center">{resultsArray[resultsArrayInd]?.particleW === 0 ? "‎" : resultsArray[resultsArrayInd]?.particleW}</p>
+                                    <p className="text-sm text-center">{resultsArray[resultsArrayInd]?.verbW === 0 ? "‎" : resultsArray[resultsArrayInd]?.verbW}</p>
                                 </div>
                                 <div className="flex flex-col">
                                     <p className="text-sm font-bold text-center">Actual Answer</p>
-                                    <p className="text-sm text-center">{resultsArray[resultsArrayInd]?.particleG}</p>
+                                    <p className="text-sm text-center">{resultsArray[resultsArrayInd]?.verbG}</p>
                                 </div>
                             </div>
                             <GrCaretNext className="self-center" onClick={() => setResultsArrayInd((prev) => prev < resultsArray.length - 1 ? prev + 1 : 0)}/>

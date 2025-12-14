@@ -67,12 +67,12 @@ export default function KanaDrillComp(){
             <div className="flex flex-col bg-gray-300 rounded-2xl p-5 items-center">
                 <div className="flex-col w-full flex p-4 my-4 self-center items-center justify-center bg-white border-2 rounded-2xl border-black">
                     <p className="text-5xl text-center text-black font-bold pb-2">{currentKana?.character}</p>
-                    <input placeholder="入力" onChange={handleInput} value={inputText} className="border-2 border-black text-black rounded-lg align-middle text-center bg-gray-300"></input>
+                    <input placeholder="入力" onChange={handleInput} maxLength={3} value={inputText} className="border-2 border-black text-black rounded-lg align-middle text-center bg-gray-300"></input>
                 </div>
                 <p className="text-2xl font-black text-black text-center">Kana Selection</p>
                     <div className="flex flex-row w-full justify-evenly py-2">
-                            <button onClick={handleOnlyHiragana} className={!onlyHiragana ? `px-5 py-2 rounded-md bg-red-500 font-black hover:bg-red-500/50`:`px-5 py-2 rounded-md bg-green-400 font-black hover:bg-green-400/50`}>Only Hiragana</button>
-                            <button onClick={handleOnlyKatakana} className={!onlyKatakana ? `px-5 py-2 rounded-md bg-red-500 font-black hover:bg-red-500/50`: `px-5 py-2 rounded-md bg-green-400 font-black hover:bg-green-400/50`}>Only Katakana</button>
+                            <button onClick={handleOnlyHiragana} className={!onlyHiragana ? `px-5 py-2 rounded-md bg-red-500 font-black hover:bg-red-500/50`:`px-5 py-2 rounded-md bg-green-400 font-black hover:bg-green-400/50`}>Hiragana</button>
+                            <button onClick={handleOnlyKatakana} className={!onlyKatakana ? `px-5 py-2 rounded-md bg-red-500 font-black hover:bg-red-500/50`: `px-5 py-2 rounded-md bg-green-400 font-black hover:bg-green-400/50`}>Katakana</button>
                     </div>
                 </div>
         </div>
