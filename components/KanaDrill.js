@@ -84,6 +84,45 @@ export default function KanaDrillComp() {
       }
     }
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      // Ignore shortcuts when typing inside an input or textarea
+      if (
+        event.target.tagName === "INPUT" ||
+        event.target.tagName === "TEXTAREA" ||
+        event.target.isContentEditable
+      ) {
+        return;
+      }
+
+      switch (event.key.toLowerCase()) {
+        case "h":
+          handleOnlyHiragana();
+          break;
+
+        case "k":
+          handleOnlyKatakana();
+          break;
+
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [
+    onlyHiragana,
+    onlyKatakana,
+    fullKana,
+    shuffledKana,
+    handleOnlyHiragana,
+    handleOnlyKatakana,
+  ]);
   return (
     <div className="flex flex-col bg-amber-50 md:px-10 p-4 rounded-2xl w-full">
       <div className="flex flex-col bg-gray-300 rounded-2xl p-5 items-center">
