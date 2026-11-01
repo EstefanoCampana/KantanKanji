@@ -42,6 +42,9 @@ export default function Game() {
     },
     [options.length],
   );
+  const back = () => {
+    setStart(false);
+  };
   useEffect(() => {
     const handleKeyDown = (event) => {
       // Ignore shortcuts when typing inside an input or textarea
@@ -66,6 +69,9 @@ export default function Game() {
           changeOption("down");
           break;
 
+        case "b":
+          back();
+
         default:
           break;
       }
@@ -77,14 +83,20 @@ export default function Game() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [changeOption, selectOption, options, selected]);
+
   return (
-    <main className="flex flex-col items-center p-2 min-h-dvh w-full overflow-hidden">
-      <div className="flex-1 w-full flex-col justify-items-center bg-amber-50 p-4 rounded-2xl">
+    <main className="flex flex-col items-center min-h-screen p-2 overflow-hidden">
+      <div className="flex flex-1 w-full flex-col bg-amber-50 p-4 rounded-2xl">
         {start ? (
-          <KanaDrillComp />
+          <div>
+            <p className="self-start text-black cursor-pointer" onClick={back}>
+              &#10094;- Back
+            </p>
+            <KanaDrillComp />
+          </div>
         ) : (
-          <div className="flex flex-col w-full items-center">
-            <div className="flex flex-row mb-10">
+          <div className="flex flex-1 flex-col items-center">
+            <div className="flex flex-col md:flex-row text-center">
               <div className="flex flex-col text-center font-light">
                 <p className="text-sm text-amber-50">welcome to</p>
                 <p className="text-4xl text-black">Welcome to</p>
@@ -96,14 +108,29 @@ export default function Game() {
                 <p className="text-4xl text-black font-bold ml-2">簡単漢字！</p>
               </div>
             </div>
-            <div className="w-1/2">
+            <div className="w-full md:w-1/2 my-auto">
               {options.map((option, id) => (
                 <Option
                   key={id}
                   text={option}
                   selected={selected === id}
+                  action={() => {
+                    setSelected(id);
+                    selectOption(option);
+                  }}
                 ></Option>
               ))}
+            </div>
+            {/* Bottom instructions */}
+            <div className="flex w-full mt-auto justify-between text-amber-50 md:text-black text-lg">
+              <div className="flex gap-4">
+                <p>^ - Move</p>
+                <p>Enter - Select</p>
+              </div>
+
+              <div>
+                <p>Left Click - Select</p>
+              </div>
             </div>
           </div>
         )}
@@ -112,12 +139,13 @@ export default function Game() {
   );
 }
 
-function Option({ text, selected = false }) {
+function Option({ text, selected = false, action }) {
   return (
-    <div
-      className={`text-black border border-black p-4 rounded-xl m-4 w-full text-center ${selected ? `bg-green-300` : `bg-gray-300`}`}
+    <button
+      className={`text-black border border-black p-4 rounded-xl my-2 w-full text-center ${selected ? `bg-green-300` : `bg-gray-300`}`}
+      onClick={action}
     >
       {text}
-    </div>
+    </button>
   );
 }

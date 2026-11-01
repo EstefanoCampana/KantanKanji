@@ -1,7 +1,7 @@
 "use client";
 
 import { getKana } from "@/app/services/kantankanji-services";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 // Fisher-Yates shuffle
 function shuffleArray(array) {
@@ -30,39 +30,46 @@ export default function KanaDrillComp() {
 
   // Initialize kana
   useEffect(() => {
-    getKana(setFullKana);
+    const loadKana = async () => {
+      const data = await getKana();
+      setFullKana(data);
+    };
+    loadKana();
   }, []);
 
   // Create a new deck based on the selected filter
-  const createNewDeck = (filter) => {
-    let filtered = [...fullKana];
-    if (filter === "hira") {
-      filtered = filtered.filter((kana) => kana.category.startsWith("hirada"));
-    }
-    if (filter === "kata") {
-      filtered = filtered.filter((kana) => kana.category.startsWith("kata"));
-    }
-    setShuffledKana(shuffleArray(filtered));
-    setCurrentIndex(0);
-    setInputText("");
-    setIsRoundOver(false);
-    setOnlyHiragana(false);
-    setOnlyKatakana(false);
-  };
+  const createNewDeck = useCallback(
+    (filter) => {
+      let filtered = [...fullKana];
+      if (filter === "hira") {
+        filtered = filtered.filter((kana) => kana.category.startsWith("hira"));
+      }
+      if (filter === "kata") {
+        filtered = filtered.filter((kana) => kana.category.startsWith("kata"));
+      }
+      setShuffledKana(shuffleArray(filtered));
+      setCurrentIndex(0);
+      setInputText("");
+      setIsRoundOver(false);
+      setOnlyHiragana(false);
+      setOnlyKatakana(false);
+    },
+    [fullKana],
+  );
 
   // Toggle Katakana
-  const handleOnlyKatakana = () => {
+  const handleOnlyKatakana = useCallback(() => {
     setOnlyKatakana(true);
 
     createNewDeck("kata");
-  };
+  }, [createNewDeck]);
 
   // Toggle Hiragana
-  const handleOnlyHiragana = () => {
+  const handleOnlyHiragana = useCallback(() => {
     setOnlyHiragana(true);
 
     createNewDeck("hira");
-  };
+  }, [createNewDeck]);
 
   // Start a new shuffled round
   const restartRound = () => {
@@ -124,10 +131,14 @@ export default function KanaDrillComp() {
     handleOnlyKatakana,
   ]);
   return (
-    <div className="flex flex-col bg-amber-50 md:px-10 p-4 rounded-2xl w-full">
-      <div className="flex flex-col bg-gray-300 rounded-2xl p-5 items-center">
+    <div className="flex flex-col bg-amber-50 p-2 rounded-2xl w-full">
+      <div className="flex flex-col bg-gray-300 rounded-2xl p-2 items-center">
         {!isRoundOver ? (
-          <div className="flex-col w-full flex p-4 my-4 self-center items-center justify-center bg-white border-2 rounded-2xl border-black">
+          <div className="flex-col w-full flex p-4 my-4 self-center items-center bg-white border-2 rounded-2xl border-black">
+            <div className="text-black flex flex-row gap-2">
+              <p>{shuffledKana.length - currentIndex}</p>
+              <p></p>
+            </div>
             <p className="text-5xl text-center text-black font-bold pb-2">
               {currentKana?.character}
             </p>
@@ -137,31 +148,30 @@ export default function KanaDrillComp() {
               maxLength={3}
               value={inputText}
               className="border-2 border-black text-black rounded-lg align-middle text-center bg-gray-300"
+              autoFocus
             ></input>
+            <button
+              onClick={() => setIsRoundOver(true)}
+              className="bg-black text-white font-bold rounded 2xl p-2 mt-2"
+            >
+              Back
+            </button>
           </div>
         ) : (
           <div className="flex w-full flex-col">
             <p className="text-2xl font-black text-black text-center">
               Kana Selection
             </p>
-            <div className="flex flex-row w-full justify-evenly py-2">
+            <div className="flex flex-row justify-evenly py-2">
               <button
                 onClick={handleOnlyHiragana}
-                className={
-                  !onlyHiragana
-                    ? `px-5 py-2 rounded-md bg-red-500 font-black hover:bg-red-500/50`
-                    : `px-5 py-2 rounded-md bg-green-400 font-black hover:bg-green-400/50`
-                }
+                className="px-4 py-2 rounded-md bg-red-500 font-black hover:bg-red-500/50"
               >
                 Hiragana
               </button>
               <button
                 onClick={handleOnlyKatakana}
-                className={
-                  !onlyKatakana
-                    ? `px-5 py-2 rounded-md bg-red-500 font-black hover:bg-red-500/50`
-                    : `px-5 py-2 rounded-md bg-green-400 font-black hover:bg-green-400/50`
-                }
+                className="px-4 py-2 rounded-md bg-green-400 font-black hover:bg-green-400/50"
               >
                 Katakana
               </button>
