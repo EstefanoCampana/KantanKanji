@@ -172,7 +172,7 @@ export default function Game() {
                     selected={selected === id}
                     action={() => {
                       setSelected(id);
-                      selectOption(game);
+                      selectGameMode(game);
                     }}
                     image={"/kanaDrillThumb.png"}
                   />
