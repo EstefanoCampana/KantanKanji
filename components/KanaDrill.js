@@ -2,7 +2,7 @@
 
 import { getKana } from "@/app/services/kantankanji-services";
 import { useState, useEffect, useCallback, useRef, use } from "react";
-
+import Image from "next/image";
 // Fisher-Yates shuffle
 function shuffleArray(array) {
   const shuffled = [...array];
@@ -85,14 +85,10 @@ export default function KanaDrillComp() {
     (filter) => {
       let filtered = [...fullKana];
       if (filter === "hira") {
-        filtered = filtered.filter((kana) =>
-          kana.category.startsWith("hirada"),
-        );
+        filtered = filtered.filter((kana) => kana.category.startsWith("hira"));
       }
       if (filter === "kata") {
-        filtered = filtered.filter((kana) =>
-          kana.category.startsWith("katada"),
-        );
+        filtered = filtered.filter((kana) => kana.category.startsWith("kata"));
       }
       setShuffledKana(shuffleArray(filtered));
       setCurrentIndex(0);
@@ -182,42 +178,70 @@ export default function KanaDrillComp() {
     }
   }, [gameState, stopTimer]);
   return (
-    <div className="flex flex-col bg-amber-50 p-2 rounded-2xl w-full">
-      <div className="flex flex-col bg-gray-300 rounded-2xl p-2 items-center">
-        {gameState == null && (
-          <div className="flex w-full flex-col">
-            <p className="text-2xl font-black text-black text-center">
-              Kana Selection
-            </p>
-            <div className="flex flex-row justify-evenly py-2">
-              <button
-                onClick={handleOnlyHiragana}
-                className="px-4 py-2 rounded-md bg-red-500 font-black hover:bg-red-500/50"
-              >
-                Hiragana <br />
-                <p className="font-medium">{formatTime(hiraBestTime)}</p>
-              </button>
-              <button
-                onClick={handleOnlyKatakana}
-                className="px-4 py-2 rounded-md bg-green-500 font-black hover:bg-green-500/50"
-              >
-                Katakana <br />
-                <p className="font-medium">{formatTime(kataBestTime)}</p>
-              </button>
+    <div className="flex flex-col flex-1 bg-gray-300 rounded-2xl p-2">
+      {gameState == null && (
+        <div className="flex flex-1 flex-col min-h-0">
+          <p className="text-2xl font-black text-black text-center">
+            Kana Selection
+          </p>
+          <div className="flex flex-row flex-1 justify-evenly my-auto min-h-0">
+            <div
+              className={`flex flex-col flex-1 min-h-0 p-4 mx-2 bg-red-500 hover:bg-red-500/50`}
+              onClick={handleOnlyHiragana}
+            >
+              <div></div>
+              <div className="relative flex-1 min-h-0 overflow-hidden">
+                <Image
+                  className="object-cover"
+                  src="/kanaDrillThumb.png"
+                  alt="thumbnail"
+                  fill
+                  sizes="(max-width:768px) 100vw, 250px"
+                ></Image>
+              </div>
+              <div className="flex py-2 shrink-0">
+                <h1 className="text-white font-black">
+                  Hiragana <br />
+                  <p className="font-medium">{formatTime(hiraBestTime)}</p>
+                </h1>
+              </div>
+            </div>
+            <div
+              className={`flex flex-col flex-1 min-h-0 p-4 mx-2 bg-green-500 hover:bg-green-500/50`}
+              onClick={handleOnlyKatakana}
+            >
+              <div></div>
+              <div className="relative flex-1 min-h-0 overflow-hidden">
+                <Image
+                  className="object-cover"
+                  src="/kanaDrillThumb.png"
+                  alt="thumbnail"
+                  fill
+                  sizes="(max-width:768px) 100vw, 250px"
+                ></Image>
+              </div>
+              <div className="flex py-2 shrink-0">
+                <h1 className="text-white font-black">
+                  Katakana <br />
+                  <p className="font-medium">{formatTime(kataBestTime)}</p>
+                </h1>
+              </div>
             </div>
           </div>
-        )}
-        {gameState === "playing" && (
-          <div className="flex-col w-full flex p-4 my-4 self-center items-center bg-white border-2 rounded-2xl border-black">
-            <div className="text-black flex flex-row gap-2 items-center">
-              <p className="border-2 border-black rounded-xl px-2 m-2">
-                {shuffledKana.length - currentIndex}
-              </p>
-              <p className="border-2 border-amber-50/0">
-                {(totalTime / 1000).toFixed(1)}
-              </p>
-            </div>
-            <p className="text-5xl text-center text-black font-bold pb-2">
+        </div>
+      )}
+      {gameState === "playing" && (
+        <div className="flex flex-1 w-full flex-col p-4 items-center bg-white border-2 rounded-2xl border-black">
+          <div className="text-black flex flex-row gap-2 items-center my-auto">
+            <p className="border-2 border-black rounded-xl px-2 m-2">
+              {shuffledKana.length - currentIndex}
+            </p>
+            <p className="border-2 border-amber-50/0">
+              {(totalTime / 1000).toFixed(1)}
+            </p>
+          </div>
+          <div className="my-auto">
+            <p className="text-[100px] border-4 text-center text-black font-bold mb-4">
               {currentKana?.character}
             </p>
             <input
@@ -225,37 +249,36 @@ export default function KanaDrillComp() {
               onChange={handleInput}
               maxLength={3}
               value={inputText}
-              className="border-2 border-black text-black rounded-lg align-middle text-center bg-gray-300"
+              className="border-2 w-full border-black text-black rounded-lg text-center bg-gray-300"
               autoFocus
             ></input>
-            <button
-              onClick={() => setGameState(null)}
-              className="bg-black text-white font-bold rounded 2xl p-2 mt-2"
-            >
-              Back
-            </button>
           </div>
-        )}
-        {gameState === "finished" && (
-          <div className="flex flex-col items-center">
-            <p className="text-black font-extrabold text-2xl">
-              You finished in {formatTime(totalTime)}!
-            </p>
-            <p className="text-black font-medium">
-              Your best time is{" "}
-              {onlyHiragana
-                ? formatTime(hiraBestTime)
-                : formatTime(kataBestTime)}
-            </p>
-            <button
-              onClick={() => setGameState(null)}
-              className="bg-black text-white font-bold rounded 2xl p-2 mt-2"
-            >
-              Back
-            </button>
-          </div>
-        )}
-      </div>
+
+          <button
+            onClick={() => setGameState(null)}
+            className="bg-black text-white font-bold rounded 2xl p-2 my-auto"
+          >
+            Back
+          </button>
+        </div>
+      )}
+      {gameState === "finished" && (
+        <div className="flex flex-col items-center my-auto">
+          <p className="text-black font-extrabold text-2xl">
+            You finished in {formatTime(totalTime)}!
+          </p>
+          <p className="text-black font-medium">
+            Your best time is{" "}
+            {onlyHiragana ? formatTime(hiraBestTime) : formatTime(kataBestTime)}
+          </p>
+          <button
+            onClick={() => setGameState(null)}
+            className="bg-black text-white font-bold rounded 2xl p-2 mt-2"
+          >
+            Back
+          </button>
+        </div>
+      )}
     </div>
   );
 }

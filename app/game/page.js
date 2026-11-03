@@ -1,11 +1,26 @@
 "use client";
 import KanaDrillComp from "@/components/KanaDrill";
-import { useCallback, useEffect, useState, useMemo } from "react";
+import { useCallback, useEffect, useState, useMemo, use } from "react";
+import Image from "next/image";
 export default function Game() {
   const [selected, setSelected] = useState(0);
   const [start, setStart] = useState(false);
+  const [gameMode, setGameMode] = useState(null);
 
   const options = useMemo(() => ["Start", "Settings", "Help"], []);
+  const games = useMemo(
+    () => ["Kana Drill", "Particle Practice", "Kanji Practice"],
+    [],
+  );
+
+  const back = useCallback(() => {
+    if (gameMode != null) {
+      setGameMode(null);
+    }
+    if (start == true && gameMode == null) {
+      setStart(false);
+    }
+  }, [gameMode, start]);
 
   const selectOption = useCallback(
     (option) => {
@@ -14,6 +29,7 @@ export default function Game() {
       switch (option) {
         case "Start":
           setStart(true);
+          setSelected(0);
           break;
 
         case "Settings":
@@ -30,21 +46,51 @@ export default function Game() {
     },
     [setStart],
   );
-  const changeOption = useCallback(
-    (direction) => {
-      if (direction === "up") {
-        setSelected((prev) => (prev - 1 + options.length) % options.length);
-      }
+  const selectGameMode = useCallback(
+    (gameMode) => {
+      console.log("Selected:", gameMode);
 
-      if (direction === "down") {
-        setSelected((prev) => (prev + 1) % options.length);
+      switch (gameMode) {
+        case "Kana Drill":
+          setGameMode("drill");
+          break;
+
+        case "Particle Practice":
+          setGameMode("particle");
+          break;
+
+        case "Kanji Practice":
+          setGameMode("kanji");
+          break;
+
+        default:
+          break;
       }
     },
-    [options.length],
+    [setGameMode],
   );
-  const back = () => {
-    setStart(false);
-  };
+  const changeOption = useCallback(
+    (direction) => {
+      if (start == false) {
+        if (direction === "up") {
+          setSelected((prev) => (prev - 1 + options.length) % options.length);
+        }
+
+        if (direction === "down") {
+          setSelected((prev) => (prev + 1) % options.length);
+        }
+      } else if (start == true) {
+        if (direction === "left") {
+          setSelected((prev) => (prev - 1 + options.length) % options.length);
+        }
+        if (direction === "right") {
+          setSelected((prev) => (prev + 1) % options.length);
+        }
+      }
+    },
+    [options.length, start],
+  );
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       // Ignore shortcuts when typing inside an input or textarea
@@ -56,17 +102,30 @@ export default function Game() {
         return;
       }
 
-      switch (event.key) {
-        case "Enter":
-          selectOption(options[selected]);
+      switch (event.key.toLowerCase()) {
+        case "enter":
+          if (start == false) {
+            selectOption(options[selected]);
+          } else if (start == true) {
+            selectGameMode(games[selected]);
+          }
+
           break;
 
-        case "ArrowUp":
+        case "arrowup":
           changeOption("up");
           break;
 
-        case "ArrowDown":
+        case "arrowdown":
           changeOption("down");
+          break;
+
+        case "arrowleft":
+          changeOption("left");
+          break;
+
+        case "arrowright":
+          changeOption("right");
           break;
 
         case "b":
@@ -82,17 +141,45 @@ export default function Game() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [changeOption, selectOption, options, selected]);
+  }, [
+    changeOption,
+    selectOption,
+    options,
+    selected,
+    games,
+    start,
+    selectGameMode,
+    back,
+  ]);
 
   return (
     <main className="flex flex-col items-center min-h-screen p-2 overflow-hidden">
       <div className="flex flex-1 w-full flex-col bg-amber-50 p-4 rounded-2xl">
         {start ? (
-          <div>
-            <p className="self-start text-black cursor-pointer" onClick={back}>
+          <div className="flex flex-col flex-1 min-h-0">
+            <p
+              className="self-start m-2 text-black cursor-pointer"
+              onClick={back}
+            >
               &#10094;- Back
             </p>
-            <KanaDrillComp />
+            {gameMode === null && (
+              <div className="flex flex-row flex-1 py-10 min-h-0">
+                {games.map((game, id) => (
+                  <GameCard
+                    key={id}
+                    title={game}
+                    selected={selected === id}
+                    action={() => {
+                      setSelected(id);
+                      selectOption(game);
+                    }}
+                    image={"/kanaDrillThumb.png"}
+                  />
+                ))}
+              </div>
+            )}
+            {gameMode === "drill" && <KanaDrillComp />}
           </div>
         ) : (
           <div className="flex flex-1 flex-col items-center">
@@ -147,5 +234,28 @@ function Option({ text, selected = false, action }) {
     >
       {text}
     </button>
+  );
+}
+
+function GameCard({ image, title, action, selected = false }) {
+  return (
+    <div
+      className={`flex flex-col flex-1 min-h-0 border-2 p-4 mx-2 border-black ${selected ? `bg-green-300` : `bg-gray-500`}`}
+      onClick={action}
+    >
+      <div></div>
+      <div className="relative flex-1 min-h-0 overflow-hidden">
+        <Image
+          className="object-cover"
+          src={image}
+          alt="thumbnail"
+          fill
+          sizes="(max-width:768px) 100vw, 250px"
+        ></Image>
+      </div>
+      <div className="flex py-2 shrink-0">
+        <p className="text-white font-bold">{title}</p>
+      </div>
+    </div>
   );
 }
