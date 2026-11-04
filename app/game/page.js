@@ -1,26 +1,27 @@
 "use client";
-import KanaDrillComp from "@/components/KanaDrill";
 import { useCallback, useEffect, useState, useMemo, use } from "react";
 import Image from "next/image";
+import Help from "@/components/Help";
+import KanaDrill from "@/components/KanaDrill";
 export default function Game() {
   const [selected, setSelected] = useState(0);
-  const [start, setStart] = useState(false);
+  const [tab, setTab] = useState(null);
   const [gameMode, setGameMode] = useState(null);
-
-  const options = useMemo(() => ["Start", "Settings", "Help"], []);
   const games = useMemo(
     () => ["Kana Drill", "Particle Practice", "Kanji Practice"],
     [],
   );
 
+  const options = useMemo(() => ["Start", "Settings", "Help"], []);
+
   const back = useCallback(() => {
     if (gameMode != null) {
       setGameMode(null);
     }
-    if (start == true && gameMode == null) {
-      setStart(false);
+    if (tab != null && gameMode == null) {
+      setTab(null);
     }
-  }, [gameMode, start]);
+  }, [gameMode, tab]);
 
   const selectOption = useCallback(
     (option) => {
@@ -28,7 +29,7 @@ export default function Game() {
 
       switch (option) {
         case "Start":
-          setStart(true);
+          setTab("start");
           setSelected(0);
           break;
 
@@ -37,14 +38,14 @@ export default function Game() {
           break;
 
         case "Help":
-          // Open help
+          setTab("help");
           break;
 
         default:
           break;
       }
     },
-    [setStart],
+    [setTab],
   );
   const selectGameMode = useCallback(
     (gameMode) => {
@@ -69,9 +70,10 @@ export default function Game() {
     },
     [setGameMode],
   );
+
   const changeOption = useCallback(
     (direction) => {
-      if (start == false) {
+      if (tab == null) {
         if (direction === "up") {
           setSelected((prev) => (prev - 1 + options.length) % options.length);
         }
@@ -79,7 +81,7 @@ export default function Game() {
         if (direction === "down") {
           setSelected((prev) => (prev + 1) % options.length);
         }
-      } else if (start == true) {
+      } else if (tab === "start") {
         if (direction === "left") {
           setSelected((prev) => (prev - 1 + options.length) % options.length);
         }
@@ -88,7 +90,7 @@ export default function Game() {
         }
       }
     },
-    [options.length, start],
+    [options.length, tab],
   );
 
   useEffect(() => {
@@ -104,9 +106,9 @@ export default function Game() {
 
       switch (event.key.toLowerCase()) {
         case "enter":
-          if (start == false) {
+          if (tab == null) {
             selectOption(options[selected]);
-          } else if (start == true) {
+          } else if (tab === "start") {
             selectGameMode(games[selected]);
           }
 
@@ -147,41 +149,15 @@ export default function Game() {
     options,
     selected,
     games,
-    start,
+    tab,
     selectGameMode,
     back,
   ]);
 
   return (
     <main className="flex flex-col items-center min-h-screen p-2 overflow-hidden">
-      <div className="flex flex-1 w-full flex-col bg-amber-50 p-4 rounded-2xl">
-        {start ? (
-          <div className="flex flex-col flex-1 min-h-0">
-            <p
-              className="self-start m-2 text-black cursor-pointer"
-              onClick={back}
-            >
-              &#10094;- Back
-            </p>
-            {gameMode === null && (
-              <div className="flex flex-row flex-1 py-10 min-h-0">
-                {games.map((game, id) => (
-                  <GameCard
-                    key={id}
-                    title={game}
-                    selected={selected === id}
-                    action={() => {
-                      setSelected(id);
-                      selectGameMode(game);
-                    }}
-                    image={"/kanaDrillThumb.png"}
-                  />
-                ))}
-              </div>
-            )}
-            {gameMode === "drill" && <KanaDrillComp />}
-          </div>
-        ) : (
+      <div className="flex flex-1 w-full flex-col bg-amber-50 p-10 rounded-2xl">
+        {tab == null && (
           <div className="flex flex-1 flex-col items-center">
             <div className="flex flex-col md:flex-row text-center">
               <div className="flex flex-col text-center font-light">
@@ -221,6 +197,45 @@ export default function Game() {
             </div>
           </div>
         )}
+        {tab == "start" && (
+          <div className="flex flex-col flex-1 min-h-0">
+            <p
+              className="self-start mb-2 mx-2 text-black cursor-pointer"
+              onClick={back}
+            >
+              &#10094;- Back
+            </p>
+            {gameMode === null && (
+              <div className="flex flex-row flex-1 min-h-0">
+                {games.map((game, id) => (
+                  <GameCard
+                    key={id}
+                    title={game}
+                    selected={selected === id}
+                    action={() => {
+                      setSelected(id);
+                      selectGameMode(game);
+                    }}
+                    image={"/kanaDrillThumb.png"}
+                  />
+                ))}
+              </div>
+            )}
+            {gameMode === "drill" && <KanaDrill />})
+          </div>
+        )}
+        {/*Settings*/}
+        {tab == "help" && (
+          <div className="flex flex-col items-center">
+            <p
+              className="self-start m-2 text-black cursor-pointer"
+              onClick={back}
+            >
+              &#10094;- Back
+            </p>
+            <Help />
+          </div>
+        )}
       </div>
     </main>
   );
@@ -236,11 +251,10 @@ function Option({ text, selected = false, action }) {
     </button>
   );
 }
-
 function GameCard({ image, title, action, selected = false }) {
   return (
     <div
-      className={`flex flex-col flex-1 min-h-0 border-2 p-4 mx-2 border-black ${selected ? `bg-green-300` : `bg-gray-500`}`}
+      className={`flex flex-col w-full min-h-0 border-2 p-4 mx-2 border-black ${selected ? `bg-green-300` : `bg-gray-500`}`}
       onClick={action}
     >
       <div></div>

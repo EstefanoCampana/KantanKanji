@@ -1,7 +1,7 @@
 "use client";
 
 import { getKana } from "@/app/services/kantankanji-services";
-import { useState, useEffect, useCallback, useRef, use } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 // Fisher-Yates shuffle
 function shuffleArray(array) {
@@ -25,13 +25,14 @@ function formatTime(milliseconds) {
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(milliseconds % 1000)}`;
 }
 
-export default function KanaDrillComp() {
+export default function KanaDrill() {
   //Array filled by the API
   const [fullKana, setFullKana] = useState([]);
   //Input variable
   const [inputText, setInputText] = useState("");
   //Index of the current kana
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   //Mode Controllers
   const [onlyHiragana, setOnlyHiragana] = useState(false);
   const [onlyKatakana, setOnlyKatakana] = useState(false);
@@ -51,9 +52,16 @@ export default function KanaDrillComp() {
   // Initialize kana
   useEffect(() => {
     const loadKana = async () => {
-      const data = await getKana();
-      setFullKana(data);
+      try {
+        const data = await getKana();
+        setFullKana(data);
+      } catch (error) {
+        console.error("Failed to load kana:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
+
     loadKana();
   }, []);
 
@@ -177,6 +185,14 @@ export default function KanaDrillComp() {
       stopTimer();
     }
   }, [gameState, stopTimer]);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 items-center justify-center bg-gray-300 rounded-2xl">
+        <p className="text-black text-xl font-bold">Loading Kana...</p>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col flex-1 bg-gray-300 rounded-2xl p-2">
       {gameState == null && (
