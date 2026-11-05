@@ -1,16 +1,12 @@
 "use client";
-import { useCallback, useEffect, useState, useMemo, use } from "react";
-import Image from "next/image";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import Help from "@/components/Help";
-import KanaDrill from "@/components/KanaDrill";
-export default function Game() {
+import Game from "@/components/Games";
+
+export default function Home() {
   const [selected, setSelected] = useState(0);
-  const [tab, setTab] = useState(null);
   const [gameMode, setGameMode] = useState(null);
-  const games = useMemo(
-    () => ["Kana Drill", "Particle Practice", "Kanji Practice"],
-    [],
-  );
+  const [tab, setTab] = useState(null);
 
   const options = useMemo(() => ["Start", "Settings", "Help"], []);
 
@@ -30,7 +26,6 @@ export default function Game() {
       switch (option) {
         case "Start":
           setTab("start");
-          setSelected(0);
           break;
 
         case "Settings":
@@ -47,50 +42,18 @@ export default function Game() {
     },
     [setTab],
   );
-  const selectGameMode = useCallback(
-    (gameMode) => {
-      console.log("Selected:", gameMode);
-
-      switch (gameMode) {
-        case "Kana Drill":
-          setGameMode("drill");
-          break;
-
-        case "Particle Practice":
-          setGameMode("particle");
-          break;
-
-        case "Kanji Practice":
-          setGameMode("kanji");
-          break;
-
-        default:
-          break;
-      }
-    },
-    [setGameMode],
-  );
 
   const changeOption = useCallback(
     (direction) => {
-      if (tab == null) {
-        if (direction === "up") {
-          setSelected((prev) => (prev - 1 + options.length) % options.length);
-        }
+      if (direction === "up") {
+        setSelected((prev) => (prev - 1 + options.length) % options.length);
+      }
 
-        if (direction === "down") {
-          setSelected((prev) => (prev + 1) % options.length);
-        }
-      } else if (tab === "start") {
-        if (direction === "left") {
-          setSelected((prev) => (prev - 1 + options.length) % options.length);
-        }
-        if (direction === "right") {
-          setSelected((prev) => (prev + 1) % options.length);
-        }
+      if (direction === "down") {
+        setSelected((prev) => (prev + 1) % options.length);
       }
     },
-    [options.length, tab],
+    [options.length],
   );
 
   useEffect(() => {
@@ -106,12 +69,7 @@ export default function Game() {
 
       switch (event.key.toLowerCase()) {
         case "enter":
-          if (tab == null) {
-            selectOption(options[selected]);
-          } else if (tab === "start") {
-            selectGameMode(games[selected]);
-          }
-
+          selectOption(options[selected]);
           break;
 
         case "arrowup":
@@ -122,14 +80,6 @@ export default function Game() {
           changeOption("down");
           break;
 
-        case "arrowleft":
-          changeOption("left");
-          break;
-
-        case "arrowright":
-          changeOption("right");
-          break;
-
         case "b":
           back();
 
@@ -137,22 +87,11 @@ export default function Game() {
           break;
       }
     };
-
     window.addEventListener("keydown", handleKeyDown);
-
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [
-    changeOption,
-    selectOption,
-    options,
-    selected,
-    games,
-    tab,
-    selectGameMode,
-    back,
-  ]);
+  }, [changeOption, selectOption, options, selected, back]);
 
   return (
     <main className="flex flex-col items-center min-h-screen p-2 overflow-hidden">
@@ -199,29 +138,7 @@ export default function Game() {
         )}
         {tab == "start" && (
           <div className="flex flex-col flex-1 min-h-0">
-            <p
-              className="self-start mb-2 mx-2 text-black cursor-pointer"
-              onClick={back}
-            >
-              &#10094;- Back
-            </p>
-            {gameMode === null && (
-              <div className="flex flex-row flex-1 min-h-0">
-                {games.map((game, id) => (
-                  <GameCard
-                    key={id}
-                    title={game}
-                    selected={selected === id}
-                    action={() => {
-                      setSelected(id);
-                      selectGameMode(game);
-                    }}
-                    image={"/kanaDrillThumb.png"}
-                  />
-                ))}
-              </div>
-            )}
-            {gameMode === "drill" && <KanaDrill />})
+            <Game gameMode={gameMode} setGameMode={setGameMode} />
           </div>
         )}
         {/*Settings*/}
@@ -249,27 +166,5 @@ function Option({ text, selected = false, action }) {
     >
       {text}
     </button>
-  );
-}
-function GameCard({ image, title, action, selected = false }) {
-  return (
-    <div
-      className={`flex flex-col w-full min-h-0 border-2 p-4 mx-2 border-black ${selected ? `bg-green-300` : `bg-gray-500`}`}
-      onClick={action}
-    >
-      <div></div>
-      <div className="relative flex-1 min-h-0 overflow-hidden">
-        <Image
-          className="object-cover"
-          src={image}
-          alt="thumbnail"
-          fill
-          sizes="(max-width:768px) 100vw, 250px"
-        ></Image>
-      </div>
-      <div className="flex py-2 shrink-0">
-        <p className="text-white font-bold">{title}</p>
-      </div>
-    </div>
   );
 }

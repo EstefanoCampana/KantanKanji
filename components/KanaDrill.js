@@ -188,68 +188,40 @@ export default function KanaDrill() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-gray-300 rounded-2xl">
+      <div className="flex flex-1 items-center justify-center bg-gray-300">
         <p className="text-black text-xl font-bold">Loading Kana...</p>
       </div>
     );
   }
   return (
-    <div className="flex flex-col flex-1 bg-gray-300 rounded-2xl p-2">
+    <div className="flex flex-col flex-1 bg-gray-300 p-2">
       {gameState == null && (
         <div className="flex flex-1 flex-col min-h-0">
           <p className="text-2xl font-black text-black text-center">
             Kana Selection
           </p>
           <div className="flex flex-row flex-1 justify-evenly my-auto min-h-0">
-            <div
-              className={`flex flex-col flex-1 min-h-0 p-4 mx-2 bg-red-500 hover:bg-red-500/50`}
-              onClick={handleOnlyHiragana}
-            >
-              <div></div>
-              <div className="relative flex-1 min-h-0 overflow-hidden">
-                <Image
-                  className="object-cover"
-                  src="/kanaDrillThumb.png"
-                  alt="thumbnail"
-                  fill
-                  sizes="(max-width:768px) 100vw, 250px"
-                ></Image>
-              </div>
-              <div className="flex py-2 shrink-0">
-                <h1 className="text-white font-black">
-                  Hiragana <br />
-                  <p className="font-medium">{formatTime(hiraBestTime)}</p>
-                </h1>
-              </div>
-            </div>
-            <div
-              className={`flex flex-col flex-1 min-h-0 p-4 mx-2 bg-green-500 hover:bg-green-500/50`}
-              onClick={handleOnlyKatakana}
-            >
-              <div></div>
-              <div className="relative flex-1 min-h-0 overflow-hidden">
-                <Image
-                  className="object-cover"
-                  src="/kanaDrillThumb.png"
-                  alt="thumbnail"
-                  fill
-                  sizes="(max-width:768px) 100vw, 250px"
-                ></Image>
-              </div>
-              <div className="flex py-2 shrink-0">
-                <h1 className="text-white font-black">
-                  Katakana <br />
-                  <p className="font-medium">{formatTime(kataBestTime)}</p>
-                </h1>
-              </div>
-            </div>
+            <DrillOption
+              action={handleOnlyHiragana}
+              color={"red"}
+              image={"/kanaDrillThumb.png"}
+              title={"Hiragana"}
+              bestTime={hiraBestTime}
+            />
+            <DrillOption
+              action={handleOnlyKatakana}
+              color={"green"}
+              image={"/kanaDrillThumb.png"}
+              title={"Katakana"}
+              bestTime={kataBestTime}
+            />
           </div>
         </div>
       )}
       {gameState === "playing" && (
-        <div className="flex flex-1 w-full flex-col p-4 items-center bg-white border-2 rounded-2xl border-black">
+        <div className="flex flex-1 w-full flex-col items-center bg-white border-2 rounded-2xl border-black">
           <div className="text-black flex flex-row gap-2 items-center my-auto">
-            <p className="border-2 border-black rounded-xl px-2 m-2">
+            <p className="border-2 border-black rounded-xl px-2">
               {shuffledKana.length - currentIndex}
             </p>
             <p className="border-2 border-amber-50/0">
@@ -295,6 +267,32 @@ export default function KanaDrill() {
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+function DrillOption({ action, color, image, title, bestTime }) {
+  return (
+    <div
+      className={`flex flex-col flex-1 min-h-0 p-4 mx-2 bg-${color}-500 hover:bg-${color}-500/50 hover:cursor-pointer`}
+      onClick={action}
+    >
+      <div></div>
+      <div className="relative flex-1 min-h-0 overflow-hidden">
+        <Image
+          className="object-cover"
+          src={image}
+          alt="thumbnail"
+          fill
+          sizes="(max-width:768px) 100vw, 250px"
+        ></Image>
+      </div>
+      <div className="flex py-2 shrink-0">
+        <h1 className="text-white font-black">
+          {title} <br />
+          <p className="font-medium">{formatTime(bestTime)}</p>
+        </h1>
+      </div>
     </div>
   );
 }
