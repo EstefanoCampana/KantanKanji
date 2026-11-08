@@ -1,6 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { NavBarContextProvider } from "@/utils/navBarProvider";
+import AppProviders from "@/components/AppProviders";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "KantanKanji",
-  description: "A web application designed to help users practice basic japanese structure and words.",
+  description:
+    "A web application designed to help users practice basic japanese structure and words.",
 };
 
 export default function RootLayout({ children }) {
@@ -23,9 +24,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NavBarContextProvider>
-          {children}
-        </NavBarContextProvider>
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );

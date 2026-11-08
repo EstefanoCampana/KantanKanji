@@ -30,20 +30,15 @@ export async function getKana() {
   }
 }
 
-export async function getParticles(setParticleArray) {
+export async function getParticles() {
   try {
     const getItemsReference = collection(db, "particles");
     const getItemsQuery = query(getItemsReference);
     const querySnapshot = await getDocs(getItemsQuery);
-    let itemArray = [];
-    querySnapshot.forEach((doc) => {
-      let thisItem = {
-        id: doc.id,
-        ...doc.data(),
-      };
-      itemArray.push(thisItem.character);
-    });
-    setParticleArray(itemArray);
+    return querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
   } catch (error) {
     console.log(error);
   }

@@ -2,28 +2,12 @@
 
 import { getKana } from "@/app/services/kantankanji-services";
 import { useState, useEffect, useCallback, useRef } from "react";
-import Image from "next/image";
-// Fisher-Yates shuffle
-function shuffleArray(array) {
-  const shuffled = [...array];
-
-  for (let i = shuffled.length - 1; i >= 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-
-  return shuffled;
-}
-
-function formatTime(milliseconds) {
-  const totalSeconds = Math.floor(milliseconds / 1000);
-
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(milliseconds % 1000)}`;
-}
+import { GameCard } from "./GameCard";
+import { formatTime, shuffleArray } from "@/utils/functions";
+import Question from "./Question";
+import Loading from "./Loading";
+import RoundEndScreen from "./RoundEndScreen";
+import PageLayout from "./PageLayout";
 
 export default function KanaDrill() {
   //Array filled by the API
@@ -93,7 +77,9 @@ export default function KanaDrill() {
     (filter) => {
       let filtered = [...fullKana];
       if (filter === "hira") {
-        filtered = filtered.filter((kana) => kana.category.startsWith("hira"));
+        filtered = filtered.filter((kana) =>
+          kana.category.startsWith("hirada"),
+        );
       }
       if (filter === "kata") {
         filtered = filtered.filter((kana) => kana.category.startsWith("kata"));
@@ -187,112 +173,49 @@ export default function KanaDrill() {
   }, [gameState, stopTimer]);
 
   if (isLoading) {
-    return (
-      <div className="flex flex-1 items-center justify-center bg-gray-300">
-        <p className="text-black text-xl font-bold">Loading Kana...</p>
-      </div>
-    );
+    return <Loading />;
   }
   return (
-    <div className="flex flex-col flex-1 bg-gray-300 p-2">
+    <PageLayout title={"Kana Selection"} gameState={gameState}>
       {gameState == null && (
-        <div className="flex flex-1 flex-col min-h-0">
-          <p className="text-2xl font-black text-black text-center">
-            Kana Selection
-          </p>
-          <div className="flex flex-row flex-1 justify-evenly my-auto min-h-0">
-            <DrillOption
-              action={handleOnlyHiragana}
-              color={"red"}
-              image={"/kanaDrillThumb.png"}
-              title={"Hiragana"}
-              bestTime={hiraBestTime}
-            />
-            <DrillOption
-              action={handleOnlyKatakana}
-              color={"green"}
-              image={"/kanaDrillThumb.png"}
-              title={"Katakana"}
-              bestTime={kataBestTime}
-            />
-          </div>
-        </div>
+        <>
+          <GameCard
+            action={handleOnlyHiragana}
+            color={"red"}
+            image={"/kanaDrillThumb.png"}
+            title={"Hiragana"}
+            bestTime={hiraBestTime}
+          />
+          <GameCard
+            action={handleOnlyKatakana}
+            color={"green"}
+            image={"/placeholder.png"}
+            title={"Katakana"}
+            bestTime={kataBestTime}
+          />
+        </>
       )}
       {gameState === "playing" && (
-        <div className="flex flex-1 w-full flex-col items-center bg-white border-2 rounded-2xl border-black">
-          <div className="text-black flex flex-row gap-2 items-center my-auto">
-            <p className="border-2 border-black rounded-xl px-2">
-              {shuffledKana.length - currentIndex}
-            </p>
-            <p className="border-2 border-amber-50/0">
-              {(totalTime / 1000).toFixed(1)}
-            </p>
-          </div>
-          <div className="my-auto">
-            <p className="text-[100px] border-4 text-center text-black font-bold mb-4">
-              {currentKana?.character}
-            </p>
-            <input
-              placeholder="入力"
-              onChange={handleInput}
-              maxLength={3}
-              value={inputText}
-              className="border-2 w-full border-black text-black rounded-lg text-center bg-gray-300"
-              autoFocus
-            ></input>
-          </div>
-
-          <button
-            onClick={() => setGameState(null)}
-            className="bg-black text-white font-bold rounded 2xl p-2 my-auto"
-          >
-            Back
-          </button>
-        </div>
+        <Question
+          index={shuffledKana.length - currentIndex}
+          time={(totalTime / 1000).toFixed(1)}
+          question={currentKana?.character}
+          questionSize={"100px"}
+          input={true}
+          inputHandler={handleInput}
+          inputText={inputText}
+          back={() => setGameState(null)}
+        />
       )}
       {gameState === "finished" && (
-        <div className="flex flex-col items-center my-auto">
-          <p className="text-black font-extrabold text-2xl">
-            You finished in {formatTime(totalTime)}!
-          </p>
-          <p className="text-black font-medium">
-            Your best time is{" "}
-            {onlyHiragana ? formatTime(hiraBestTime) : formatTime(kataBestTime)}
-          </p>
-          <button
-            onClick={() => setGameState(null)}
-            className="bg-black text-white font-bold rounded 2xl p-2 mt-2"
-          >
-            Back
-          </button>
-        </div>
+        <RoundEndScreen
+          totalTime={totalTime}
+          bestTime={
+            onlyHiragana ? formatTime(hiraBestTime) : formatTime(kataBestTime)
+          }
+          back={() => setGameState(null)}
+        />
       )}
-    </div>
-  );
-}
-
-function DrillOption({ action, color, image, title, bestTime }) {
-  return (
-    <div
-      className={`flex flex-col flex-1 min-h-0 p-4 mx-2 bg-${color}-500 hover:bg-${color}-500/50 hover:cursor-pointer`}
-      onClick={action}
-    >
-      <div></div>
-      <div className="relative flex-1 min-h-0 overflow-hidden">
-        <Image
-          className="object-cover"
-          src={image}
-          alt="thumbnail"
-          fill
-          sizes="(max-width:768px) 100vw, 250px"
-        ></Image>
-      </div>
-      <div className="flex py-2 shrink-0">
-        <h1 className="text-white font-black">
-          {title} <br />
-          <p className="font-medium">{formatTime(bestTime)}</p>
-        </h1>
-      </div>
-    </div>
+    </PageLayout>
   );
 }

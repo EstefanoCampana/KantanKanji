@@ -3,6 +3,8 @@ import KanaDrill from "./KanaDrill";
 import { useCallback, useState, useMemo, useEffect } from "react";
 import SentenceStructure from "./SentenceStructure";
 import { useMediaQuery } from "./UseMediaQuery";
+import ParticlePractice from "./ParticlePractice";
+import { GameCard } from "./GameCard";
 
 export default function Game({ gameMode, setGameMode }) {
   //Used to check if it should have a mobile or computer layout.
@@ -13,7 +15,7 @@ export default function Game({ gameMode, setGameMode }) {
       "Kana Basics",
       "Kana Drill",
       "Sentence Structure",
-      "Practice Particle ",
+      "Practice Particle",
       "Practice Kanji",
       "Practice Writing",
       "Practice Reading",
@@ -66,6 +68,10 @@ export default function Game({ gameMode, setGameMode }) {
           setGameMode("kanji");
           break;
 
+        case "Practice Particle":
+          setGameMode("particle");
+          break;
+
         default:
           break;
       }
@@ -96,6 +102,8 @@ export default function Game({ gameMode, setGameMode }) {
         return;
       }
 
+      if (gameMode != null) return;
+
       switch (event.key.toLowerCase()) {
         case "enter":
           selectGameMode(games[selected]);
@@ -108,9 +116,6 @@ export default function Game({ gameMode, setGameMode }) {
         case "arrowright":
           changeGame("right");
           break;
-
-        case "b":
-          back();
 
         default:
           break;
@@ -125,12 +130,6 @@ export default function Game({ gameMode, setGameMode }) {
   }, [selected, games, selectGameMode, back, changeGame]);
   return (
     <div className="flex flex-col flex-1 min-h-0">
-      <p
-        className="self-start mb-2 mx-2 text-black cursor-pointer"
-        onClick={back}
-      >
-        &#10094;- Back
-      </p>
       {gameMode === null && (
         <div className="grid grid-cols-3 flex-1 min-h-0 gap-4">
           {visibleGames.map((game, index) => {
@@ -153,28 +152,7 @@ export default function Game({ gameMode, setGameMode }) {
       )}
       {gameMode === "drill" && <KanaDrill />}
       {gameMode === "sentence" && <SentenceStructure />}
-    </div>
-  );
-}
-function GameCard({ image, title, action, selected = false }) {
-  return (
-    <div
-      className={`flex flex-col w-full min-h-0 border-2 mx-2 border-black hover:cursor-pointer ${selected ? `bg-green-300 text-black` : `bg-gray-500 text-white`}`}
-      onClick={action}
-    >
-      <div></div>
-      <div className="relative flex-1 min-h-0 overflow-hidden">
-        <Image
-          className="object-cover"
-          src={image}
-          alt="thumbnail"
-          fill
-          sizes="(max-width:768px) 100vw, 250px"
-        ></Image>
-      </div>
-      <div className="flex mt-2 shrink-0 text-center justify-center">
-        <p className="font-bold">{title}</p>
-      </div>
+      {gameMode === "particle" && <ParticlePractice />}
     </div>
   );
 }
