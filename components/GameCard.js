@@ -7,11 +7,10 @@ export function GameCard({
   action,
   selected = false,
   bestTime = null,
-  color = null,
 }) {
   return (
     <div
-      className={`flex flex-col w-full min-h-0 border-2 mx-2 border-black hover:cursor-pointer bg-${color}-500 hover:bg-${color}-500/50 ${selected ? `bg-green-300 text-black` : `bg-gray-500 text-white`}`}
+      className={`flex flex-col w-full min-h-0 border-2 mx-2 border-black hover:cursor-pointer ${selected ? `bg-green-300 text-black` : `bg-gray-500 text-white`}`}
       onClick={action}
     >
       <div></div>

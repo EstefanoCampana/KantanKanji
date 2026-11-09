@@ -30,6 +30,40 @@ export async function getKana() {
   }
 }
 
+export async function getHiragana() {
+  try {
+    const getItemsReference = collection(db, "kana");
+    const querySnapshot = await getDocs(getItemsReference);
+
+    return querySnapshot.docs
+      .map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+      .filter((item) => item.category.startsWith("hira"));
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
+export async function getKatakana() {
+  try {
+    const getItemsReference = collection(db, "kana");
+    const querySnapshot = await getDocs(getItemsReference);
+
+    return querySnapshot.docs
+      .map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+      .filter((item) => item.category.startsWith("kata"));
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
 export async function getParticles() {
   try {
     const getItemsReference = collection(db, "particles");

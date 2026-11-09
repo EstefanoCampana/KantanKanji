@@ -1,104 +1,70 @@
 "use client";
-import { useCallback, useEffect, useState, useMemo } from "react";
+import { useCallback } from "react";
 import Help from "@/components/Help";
 import Game from "@/components/Games";
 
+import SentenceStructure from "@/components/SentenceStructure";
+import ParticlePractice from "@/components/ParticlePractice";
+
+import { useNavigation } from "./context/NavigationContext";
+import { useKeyboard } from "./context/KeyboardContext";
+import { useMenuNavigation } from "./hooks/useMenuNavigation";
+
+import BackButton from "@/components/BackButton";
+import KanaDrill from "@/components/KanaDrill/KanaDrill";
+import KanaDrillMenu from "@/components/KanaDrill/KanaDrillMenu";
+
+const OPTIONS = ["Start", "Settings", "Help"];
+
 export default function Home() {
-  const [selected, setSelected] = useState(0);
-  const [gameMode, setGameMode] = useState(null);
-  const [tab, setTab] = useState(null);
+  const { currentRoute, navigate } = useNavigation();
 
-  const options = useMemo(() => ["Start", "Settings", "Help"], []);
-
-  const back = useCallback(() => {
-    if (gameMode != null) {
-      setGameMode(null);
-    }
-    if (tab != null && gameMode == null) {
-      setTab(null);
-    }
-  }, [gameMode, tab]);
+  const { selected, setSelected, moveSelection } = useMenuNavigation(
+    OPTIONS.length,
+  );
 
   const selectOption = useCallback(
     (option) => {
       console.log("Selected:", option);
+      const routes = {
+        Start: "games",
+        Settings: "settings",
+        Help: "help",
+      };
 
-      switch (option) {
-        case "Start":
-          setTab("start");
-          break;
-
-        case "Settings":
-          // Open settings
-          break;
-
-        case "Help":
-          setTab("help");
-          break;
-
-        default:
-          break;
+      if (routes[option]) {
+        navigate(routes[option]);
       }
     },
-    [setTab],
+    [navigate],
   );
-
-  const changeOption = useCallback(
-    (direction) => {
-      if (direction === "up") {
-        setSelected((prev) => (prev - 1 + options.length) % options.length);
-      }
-
-      if (direction === "down") {
-        setSelected((prev) => (prev + 1) % options.length);
-      }
-    },
-    [options.length],
-  );
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      // Ignore shortcuts when typing inside an input or textarea
-      if (
-        event.target.tagName === "INPUT" ||
-        event.target.tagName === "TEXTAREA" ||
-        event.target.isContentEditable
-      ) {
-        return;
-      }
-
-      if (tab != null) return;
-
+  const handleKeyboard = useCallback(
+    (event) => {
       switch (event.key.toLowerCase()) {
         case "enter":
-          selectOption(options[selected]);
+          selectOption(OPTIONS[selected]);
           break;
 
         case "arrowup":
-          changeOption("up");
+          moveSelection("up");
           break;
 
         case "arrowdown":
-          changeOption("down");
+          moveSelection("down");
           break;
-
-        case "b":
-          back();
 
         default:
           break;
       }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [changeOption, selectOption, options, selected, back, tab]);
+    },
+    [selected, selectOption, moveSelection],
+  );
 
+  useKeyboard(handleKeyboard, currentRoute === "home");
   return (
     <main className="flex flex-col items-center min-h-screen p-2 overflow-hidden">
       <div className="flex flex-1 w-full flex-col bg-amber-50 p-10 rounded-2xl">
-        {tab == null && (
+        {currentRoute === "home" && (
           <div className="flex flex-1 flex-col items-center">
             <div className="flex flex-col md:flex-row text-center">
               <div className="flex flex-col text-center font-light">
@@ -113,7 +79,7 @@ export default function Home() {
               </div>
             </div>
             <div className="w-full md:w-1/2 my-auto">
-              {options.map((option, id) => (
+              {OPTIONS.map((option, id) => (
                 <Option
                   key={id}
                   text={option}
@@ -128,7 +94,7 @@ export default function Home() {
             {/* Bottom instructions */}
             <div className="flex w-full mt-auto justify-between text-amber-50 md:text-black text-lg">
               <div className="flex gap-4">
-                <p>^ - Move</p>
+                <p>↑ / ↓ - Move</p>
                 <p>Enter - Select</p>
               </div>
 
@@ -138,27 +104,50 @@ export default function Home() {
             </div>
           </div>
         )}
-        {tab == "start" && (
+        <div
+          className={
+            currentRoute === "games" ? "flex flex-1 min-h-0" : "hidden"
+          }
+        >
           <div className="flex flex-col flex-1 min-h-0">
-            <p
-              className="self-start mb-2 mx-2 text-black cursor-pointer"
-              onClick={back}
-            >
-              &#10094;- Back
-            </p>
-            <Game gameMode={gameMode} setGameMode={setGameMode} />
+            <BackButton />
+            <Game />
+          </div>
+        </div>
+
+        {currentRoute === "help" && (
+          <div className="flex flex-col flex-1">
+            <BackButton />
+            <Help />
           </div>
         )}
-        {/*Settings*/}
-        {tab == "help" && (
-          <div className="flex flex-col items-center">
-            <p
-              className="self-start m-2 text-black cursor-pointer"
-              onClick={back}
-            >
-              &#10094;- Back
-            </p>
-            <Help />
+        <div
+          className={
+            currentRoute === "drill" ? "flex flex-1 min-h-0" : "hidden"
+          }
+        >
+          <div className="flex flex-col flex-1 min-h-0">
+            <BackButton />
+            <KanaDrillMenu />
+          </div>
+        </div>
+
+        {currentRoute === "hiragana" && (
+          <div className="flex flex-col flex-1 min-h-0">
+            <KanaDrill kana={"hiragana"} />
+          </div>
+        )}
+
+        {currentRoute === "katakana" && (
+          <div className="flex flex-col flex-1 min-h-0">
+            <KanaDrill kana={"katakana"} />
+          </div>
+        )}
+
+        {currentRoute === "particle" && (
+          <div className="flex flex-col flex-1 min-h-0">
+            <BackButton />
+            <ParticlePractice />
           </div>
         )}
       </div>

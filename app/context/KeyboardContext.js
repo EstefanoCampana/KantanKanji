@@ -8,10 +8,13 @@ import {
   useRef,
 } from "react";
 
+import { useNavigation } from "./NavigationContext";
+
 const keyboardContext = createContext(null);
 
 export function KeyboardProvider({ children }) {
   const activeHandler = useRef(null);
+  const { back } = useNavigation();
 
   const registerHandler = useCallback((handler) => {
     activeHandler.current = handler;
@@ -32,6 +35,12 @@ export function KeyboardProvider({ children }) {
       ) {
         return;
       }
+
+      if (event.key === "Escape" || event.key.toLowerCase() === "b") {
+        back();
+        return;
+      }
+
       activeHandler.current?.(event);
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -39,7 +48,7 @@ export function KeyboardProvider({ children }) {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [back]);
   return (
     <keyboardContext.Provider value={{ registerHandler }}>
       {children}

@@ -1,42 +1,48 @@
-import Image from "next/image";
-import KanaDrill from "./KanaDrill";
-import { useCallback, useState, useMemo, useEffect } from "react";
-import SentenceStructure from "./SentenceStructure";
-import { useMediaQuery } from "./UseMediaQuery";
-import ParticlePractice from "./ParticlePractice";
 import { GameCard } from "./GameCard";
 
-export default function Game({ gameMode, setGameMode }) {
+import { useCallback, useState, useMemo, useEffect } from "react";
+import { useMediaQuery } from "./UseMediaQuery";
+import { useNavigation } from "@/app/context/NavigationContext";
+import { useKeyboard } from "@/app/context/KeyboardContext";
+import { useMenuNavigation } from "@/app/hooks/useMenuNavigation";
+
+const GAMES = [
+  "Kana Basics",
+  "Kana Drill",
+  "Sentence Structure",
+  "Practice Particle",
+  "Practice Kanji",
+  "Practice Writing",
+  "Practice Reading",
+];
+
+const THUMBNAILS = [
+  "/placeholder.png",
+  "/kanaDrillThumb.png",
+  "/placeholder.png",
+  "/placeholder.png",
+  "/placeholder.png",
+  "/placeholder.png",
+  "/placeholder.png",
+];
+
+const GAME_ROUTES = {
+  "Kana Drill": "drill",
+  "Sentence Structure": "sentence",
+  "Practice Particle": "particle",
+  "Practice Kanji": "kanji",
+};
+
+export default function Game() {
   //Used to check if it should have a mobile or computer layout.
   const smallScreen = useMediaQuery("(max-width: 768px)");
-  //Array of all the mini-games for the application.
-  const games = useMemo(
-    () => [
-      "Kana Basics",
-      "Kana Drill",
-      "Sentence Structure",
-      "Practice Particle",
-      "Practice Kanji",
-      "Practice Writing",
-      "Practice Reading",
-    ],
-    [],
-  );
 
-  const thumbnails = useMemo(
-    () => [
-      "/placeholder.png",
-      "/kanaDrillThumb.png",
-      "/placeholder.png",
-      "/placeholder.png",
-      "/placeholder.png",
-      "/placeholder.png",
-      "/placeholder.png",
-    ],
-    [],
-  );
+  const { navigate, currentRoute } = useNavigation();
+
   //Game selected from the games array.
-  const [selected, setSelected] = useState(0);
+  const { selected, setSelected, moveSelection } = useMenuNavigation(
+    GAMES.length,
+  );
 
   const cardsPerPage = smallScreen ? 9 : 3;
   // Determine which page contains the selected game
@@ -44,115 +50,64 @@ export default function Game({ gameMode, setGameMode }) {
   // Determine the first game index on that page
   const startIndex = currentPage * cardsPerPage;
   // Get only the three games for the current page
-  const visibleGames = games.slice(startIndex, startIndex + cardsPerPage);
+  const visibleGames = GAMES.slice(startIndex, startIndex + cardsPerPage);
 
-  const back = useCallback(() => {
-    if (gameMode != null) {
-      setGameMode(null);
-    }
-  }, [gameMode, setGameMode]);
-  const selectGameMode = useCallback(
+  const selectGame = useCallback(
     (gameMode) => {
       console.log("Selected:", gameMode);
 
-      switch (gameMode) {
-        case "Kana Drill":
-          setGameMode("drill");
-          break;
+      const route = GAME_ROUTES[gameMode];
 
-        case "Sentence Structure":
-          setGameMode("sentence");
-          break;
-
-        case "Kanji Practice":
-          setGameMode("kanji");
-          break;
-
-        case "Practice Particle":
-          setGameMode("particle");
-          break;
-
-        default:
-          break;
+      if (route) {
+        navigate(route);
       }
     },
-    [setGameMode],
+    [navigate],
   );
 
-  const changeGame = useCallback(
-    (direction) => {
-      if (direction === "left") {
-        setSelected((prev) => (prev - 1 + games.length) % games.length);
-      }
-      if (direction === "right") {
-        setSelected((prev) => (prev + 1) % games.length);
-      }
-    },
-    [games.length],
-  );
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      // Ignore shortcuts when typing inside an input or textarea
-      if (
-        event.target.tagName === "INPUT" ||
-        event.target.tagName === "TEXTAREA" ||
-        event.target.isContentEditable
-      ) {
-        return;
-      }
-
-      if (gameMode != null) return;
-
+  const handleKeyboard = useCallback(
+    (event) => {
       switch (event.key.toLowerCase()) {
         case "enter":
-          selectGameMode(games[selected]);
+          selectGame(GAMES[selected]);
           break;
 
         case "arrowleft":
-          changeGame("left");
+          moveSelection("left");
           break;
 
         case "arrowright":
-          changeGame("right");
+          moveSelection("right");
           break;
 
         default:
           break;
       }
-    };
+    },
+    [selected, selectGame, moveSelection],
+  );
 
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [selected, games, selectGameMode, back, changeGame]);
+  useKeyboard(handleKeyboard, currentRoute === "games");
   return (
     <div className="flex flex-col flex-1 min-h-0">
-      {gameMode === null && (
-        <div className="grid grid-cols-3 flex-1 min-h-0 gap-4">
-          {visibleGames.map((game, index) => {
-            const actualIndex = startIndex + index;
+      <div className="grid grid-cols-3 flex-1 min-h-0 gap-4">
+        {visibleGames.map((game, index) => {
+          const actualIndex = startIndex + index;
 
-            return (
-              <GameCard
-                key={game}
-                title={smallScreen ? game.split(" ").slice(1) : game}
-                selected={selected === actualIndex}
-                action={() => {
-                  setSelected(actualIndex);
-                  selectGameMode(game);
-                }}
-                image={thumbnails[actualIndex]}
-              />
-            );
-          })}
-        </div>
-      )}
-      {gameMode === "drill" && <KanaDrill />}
-      {gameMode === "sentence" && <SentenceStructure />}
-      {gameMode === "particle" && <ParticlePractice />}
+          return (
+            <GameCard
+              key={game}
+              title={smallScreen ? game.split(" ").slice(1) : game}
+              selected={selected === actualIndex}
+              action={() => {
+                setSelected(actualIndex);
+                selectGame(game);
+              }}
+              image={THUMBNAILS[actualIndex]}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }

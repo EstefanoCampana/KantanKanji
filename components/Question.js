@@ -47,12 +47,7 @@ export default function Question({
         </div>
       </div>
 
-      <button
-        onClick={back}
-        className="bg-black text-white font-bold rounded 2xl p-2 my-auto"
-      >
-        Back
-      </button>
+      <button className="p-2 my-auto"></button>
     </div>
   );
 }
