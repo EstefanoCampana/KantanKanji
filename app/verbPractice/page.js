@@ -7,9 +7,7 @@ import { useNavBar } from "@/utils/navBarProvider";
 
 export default function VerbPractice() {
   return (
-    <main
-      className={`flex flex-col items-center p-5 min-h-dvh w-full ${boolClick ? "overflow-hidden" : "overflow-y-auto"}`}
-    >
+    <main className={`flex flex-col items-center p-5 min-h-dvh w-full`}>
       <NavBarComp />
       <div className="md:w-1/2">
         <p className="text-center text-3xl p-4 font-black">Verb Practice</p>
