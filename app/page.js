@@ -144,6 +144,12 @@ export default function Home() {
           </div>
         )}
 
+        {currentRoute === "customDrill" && (
+          <div className="flex flex-col flex-1 min-h-0">
+            <KanaDrill kana={"custom"} />
+          </div>
+        )}
+
         {currentRoute === "particle" && (
           <div className="flex flex-col flex-1 min-h-0">
             <BackButton />

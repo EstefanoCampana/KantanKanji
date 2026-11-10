@@ -2,7 +2,7 @@ export default function Question({
   index,
   time,
   question,
-  questionSize,
+  questionSize = "xl",
   input = false,
   inputHandler,
   inputText,

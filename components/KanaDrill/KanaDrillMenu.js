@@ -6,6 +6,7 @@ import PageLayout from "../PageLayout";
 import { useKeyboard } from "@/app/context/KeyboardContext";
 import { useMenuNavigation } from "@/app/hooks/useMenuNavigation";
 import { useNavigation } from "@/app/context/NavigationContext";
+import { useBestTimes } from "@/app/context/BestTimeContext";
 
 const LEVELS = ["Hiragana", "Katakana", "Custom"];
 const THUMBNAILS = [
@@ -16,13 +17,15 @@ const THUMBNAILS = [
 const LEVELS_ROUTE = {
   Hiragana: "hiragana",
   Katakana: "katakana",
-  Custom: "custom",
+  Custom: "customDrill",
 };
 
 export default function KanaDrillMenu() {
   const { navigate, currentRoute } = useNavigation();
 
   const { selected, moveSelection } = useMenuNavigation(LEVELS.length);
+
+  const { bestTimes } = useBestTimes();
 
   const selectLevel = useCallback(
     (level) => {
@@ -35,20 +38,12 @@ export default function KanaDrillMenu() {
     [navigate],
   );
 
-  const checkLevel = (level) => {
-    if (level === "Hiragana") {
-      navigate("hiragana");
-    }
-    if (level === "Katakana") {
-      navigate("katakana");
-    }
-  };
-
   const handleKeyboard = useCallback(
     (event) => {
       switch (event.key.toLowerCase()) {
         case "enter":
           selectLevel(LEVELS[selected]);
+          break;
 
         case "arrowleft":
           moveSelection("left");
@@ -69,15 +64,20 @@ export default function KanaDrillMenu() {
 
   return (
     <PageLayout title={"Kana Selection"}>
-      {LEVELS.map((level, id) => (
-        <GameCard
-          key={id}
-          action={() => checkLevel(level)}
-          selected={selected === id}
-          image={THUMBNAILS[id]}
-          title={level}
-        />
-      ))}
+      {LEVELS.map((level, id) => {
+        const category = level.toLowerCase();
+
+        return (
+          <GameCard
+            key={id}
+            action={() => selectLevel(level)}
+            selected={selected === id}
+            image={THUMBNAILS[id]}
+            title={level}
+            bestTime={bestTimes[category]}
+          />
+        );
+      })}
     </PageLayout>
   );
 }

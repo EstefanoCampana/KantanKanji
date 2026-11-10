@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Loading from "../Loading";
 import Question from "../Question";
 import { shuffleArray } from "@/utils/functions";
 import { getHiragana, getKatakana } from "@/app/services/kantankanji-services";
 import { useTimer } from "@/app/hooks/useTimer";
 import RoundEndScreen from "../RoundEndScreen";
+import { useBestTimes } from "@/app/context/BestTimeContext";
+import Settings from "../Settings";
 
 export default function KanaDrill({ kana }) {
   //Array gotten from the api call.
@@ -25,7 +27,7 @@ export default function KanaDrill({ kana }) {
   const currentKana = shuffledKana[currentIndex];
 
   const { totalTime, startTimer, stopTimer } = useTimer();
-  const [bestTime, setBestTime] = useState(0);
+  const { updateBestTime, getBestTime } = useBestTimes();
 
   // Initialize kana
   useEffect(() => {
@@ -47,25 +49,18 @@ export default function KanaDrill({ kana }) {
     loadKana();
   }, [kana]);
 
-  // Initialize round.
-  useEffect(() => {
-    const init = () => {
-      setShuffledKana(shuffleArray(kanaArray));
-      setCurrentIndex(0);
-      setInputText("");
-      setGameState(null);
-      startTimer();
-    };
-
-    init();
+  const initializeRound = useCallback(() => {
+    setShuffledKana(shuffleArray(kanaArray));
+    setCurrentIndex(0);
+    setInputText("");
+    setGameState(null);
+    startTimer();
   }, [kanaArray, startTimer]);
 
   const finalizeRound = () => {
     const elapsed = stopTimer();
     setGameState("finished");
-    if (elapsed <= bestTime || bestTime === 0) {
-      setBestTime(elapsed);
-    }
+    updateBestTime(kana, elapsed);
   };
 
   // Handle user input and moving through the array.
@@ -83,11 +78,21 @@ export default function KanaDrill({ kana }) {
       finalizeRound();
     }
   };
+  // Initialize round.
+  useEffect(() => {
+    const init = () => {
+      initializeRound();
+    };
+    init();
+  }, [initializeRound]);
 
   if (isLoading) {
     return <Loading />;
   }
 
+  if (kana === "custom") {
+    return <Settings />;
+  }
   return (
     <>
       {gameState == null ? (
@@ -101,7 +106,11 @@ export default function KanaDrill({ kana }) {
           inputText={inputText}
         />
       ) : (
-        <RoundEndScreen totalTime={totalTime} bestTime={bestTime} />
+        <RoundEndScreen
+          totalTime={totalTime}
+          bestTime={getBestTime(kana)}
+          playAgain={initializeRound}
+        />
       )}
     </>
   );
