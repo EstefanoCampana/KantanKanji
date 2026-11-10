@@ -5,8 +5,6 @@ import NavBarComp from "@/components/NavBar";
 import { useNavBar } from "@/utils/navBarProvider";
 import Link from "next/link";
 export default function Page() {
-  const { boolClick } = useNavBar();
-
   return (
     <main
       className={`flex flex-col items-center p-5 min-h-dvh w-full ${boolClick ? "overflow-hidden" : "overflow-y-auto"}`}
