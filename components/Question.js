@@ -2,7 +2,7 @@ export default function Question({
   index,
   time,
   question,
-  questionSize = "xl",
+  questionSize = "small",
   input = false,
   inputHandler,
   inputText,
@@ -10,6 +10,17 @@ export default function Question({
   optionSelected = 0,
   back,
 }) {
+  const checkSize = (size) => {
+    switch (size) {
+      case "small":
+        return "text-[25px]";
+      case "extra-large":
+        return "text-[100px]";
+      default:
+        return "text-[25px]";
+    }
+  };
+
   return (
     <div className="flex flex-1 w-full flex-col items-center bg-white border-2 rounded-2xl border-black">
       <div className="text-black flex flex-row gap-2 items-center my-auto">
@@ -19,7 +30,7 @@ export default function Question({
       <div className=" flex-col my-auto">
         <div className="">
           <p
-            className={`text-[${questionSize}] border-b-4 text-center text-black font-bold mb-4`}
+            className={`${checkSize(questionSize)} border-b-4 text-center text-black font-bold mb-4`}
           >
             {question}
           </p>

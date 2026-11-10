@@ -100,7 +100,7 @@ export default function KanaDrill({ kana }) {
           index={shuffledKana.length - currentIndex}
           question={currentKana?.character}
           time={(totalTime / 1000).toFixed(1)}
-          questionSize={"100px"}
+          questionSize="extra-large"
           input={true}
           inputHandler={handleInput}
           inputText={inputText}
