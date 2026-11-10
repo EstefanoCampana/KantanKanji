@@ -1,14 +1,11 @@
 "use client";
 
 import CheckJapaneseLayoutComp from "@/components/CheckJapaneseLayout";
-import NavBarComp from "@/components/NavBar";
 import VerbPracticeComp from "@/components/VerbPractice";
-import { useNavBar } from "@/utils/navBarProvider";
 
 export default function VerbPractice() {
   return (
     <main className={`flex flex-col items-center p-5 min-h-dvh w-full`}>
-      <NavBarComp />
       <div className="md:w-1/2">
         <p className="text-center text-3xl p-4 font-black">Verb Practice</p>
         <p className="text-center p-4">

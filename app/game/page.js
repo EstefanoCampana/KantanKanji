@@ -1,14 +1,10 @@
 "use client";
 import CheckJapaneseLayoutComp from "@/components/CheckJapaneseLayout";
-import NavBarComp from "@/components/NavBar";
-import { useNavBar } from "@/utils/navBarProvider";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 export default function Home() {
   return (
     <main className={`flex flex-col items-center p-5 min-h-dvh w-full`}>
-      <NavBarComp />{" "}
       <div className="md:w-1/2">
         <p className="text-center text-3xl p-4 font-black">
           Welcome to KantanKanji

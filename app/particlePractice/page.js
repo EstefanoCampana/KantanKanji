@@ -1,13 +1,12 @@
 "use client";
 import CheckJapaneseLayoutComp from "@/components/CheckJapaneseLayout";
-import NavBarComp from "@/components/NavBar";
+
 import ParticlePracticeComp from "@/components/ParticlePractice";
-import { useNavBar } from "@/utils/navBarProvider";
 
 export default function Page() {
   return (
     <main className={`flex flex-col items-center p-5 min-h-dvh w-full`}>
-      <NavBarComp />
+      {" "}
       <div className="flex-1 w-full md:w-1/2 overflow-y-auto overscroll-contain">
         <p className=" text-3xl font-black text-center p-4">
           Particle Practice
