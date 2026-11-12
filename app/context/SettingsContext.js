@@ -13,7 +13,11 @@ const SettingsContext = createContext(null);
 const STORAGE_KEY = "kantankanji-settings";
 
 const INITIAL_SETTINGS = {
-  drill: ["hiragana", "あ-row", "gojuon"],
+  customDrill: {
+    kanaType: "hiragana",
+    kanaRow: "あ-row",
+    kanaCategory: "gojuon",
+  },
 };
 
 export function SettingsProvider({ children }) {
@@ -28,7 +32,14 @@ export function SettingsProvider({ children }) {
         if (saved) {
           const parsed = JSON.parse(saved);
 
-          setSettings({ ...INITIAL_SETTINGS, ...parsed });
+          setSettings({
+            ...INITIAL_SETTINGS,
+            ...parsed,
+            customDrill: {
+              ...INITIAL_SETTINGS.customDrill,
+              ...parsed.customDrill,
+            },
+          });
         }
       } catch (error) {
         console.error("Failed to load settings:", error);
@@ -41,31 +52,25 @@ export function SettingsProvider({ children }) {
 
   useEffect(() => {
     if (!isHydrated) return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    } catch (error) {
+      console.error("Failed to save settings:", error);
+    }
   }, [settings, isHydrated]);
 
-  const updateSettings = useCallback((category, settings) => {
-    if (!Object.hasOwn(INITIAL_SETTINGS, category)) return;
-
-    setSettings((prev) => {
-      const currentSettings = prev[category];
-
-      return {
-        ...prev,
-        [category]: settings,
-      };
-    });
+  const updateSettings = useCallback((setting, value) => {
+    setSettings((prev) => ({
+      ...prev,
+      customDrill: {
+        ...prev.customDrill,
+        [setting]: value,
+      },
+    }));
   }, []);
 
-  const getSettings = useCallback(
-    (category) => settings[category] ?? null,
-    [settings],
-  );
-
   return (
-    <SettingsContext.Provider
-      value={{ settings, updateSettings, getSettings, isHydrated }}
-    >
+    <SettingsContext.Provider value={{ settings, updateSettings, isHydrated }}>
       {children}
     </SettingsContext.Provider>
   );
