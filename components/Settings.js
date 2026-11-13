@@ -46,26 +46,63 @@ const OPTIONS = [
 export default function Settings() {
   const { selected, moveSelection } = useMenuNavigation(OPTIONS.length);
 
+  const currentOption = OPTIONS[selected];
+
+  const {
+    selected: selectedButton,
+    setSelected: setSelectedButton,
+    moveSelection: moveButtonSelection,
+  } = useMenuNavigation(currentOption.values.length);
+
   const { currentRoute } = useNavigation();
 
   const { settings, updateDrillSetting, isHydrated } = useSettings();
+
+  const moveSection = useCallback(
+    (direction) => {
+      moveSelection(direction);
+      setSelectedButton(0);
+    },
+    [moveSelection, setSelectedButton],
+  );
 
   const handleKeyboard = useCallback(
     (event) => {
       switch (event.key.toLowerCase()) {
         case "arrowleft":
-          moveSelection("left");
+          moveButtonSelection("left");
           break;
 
         case "arrowright":
-          moveSelection("right");
+          moveButtonSelection("right");
+          break;
+
+        case "arrowup":
+          moveSection("up");
+          break;
+
+        case "arrowdown":
+          moveSection("down");
+          break;
+
+        case "enter":
+          updateDrillSetting(
+            currentOption.setting,
+            currentOption.values[selectedButton].value,
+          );
           break;
 
         default:
           break;
       }
     },
-    [moveSelection],
+    [
+      currentOption,
+      selectedButton,
+      moveButtonSelection,
+      updateDrillSetting,
+      moveSection,
+    ],
   );
 
   useKeyboard(handleKeyboard, currentRoute === "customDrill");
@@ -83,10 +120,11 @@ export default function Settings() {
           >
             <p className="text-xl font-semibold">{option.label}</p>
             <div className="flex flex-wrap justify-center gap-2 p-2">
-              {option.values.map((button) => {
+              {option.values.map((button, index) => {
                 const isSelected =
                   settings.customDrill[option.setting] === button.value;
 
+                const isFocused = selected === id && selectedButton === index;
                 return (
                   <button
                     key={button.value}
@@ -96,7 +134,7 @@ export default function Settings() {
                     }
                     className={`p-2 border border-black ${
                       isSelected ? "bg-amber-400 font-bold" : "bg-white"
-                    }`}
+                    } ${isFocused ? "ring-4 ring-blue-500" : ""}`}
                   >
                     {button.label}
                   </button>

@@ -59,7 +59,7 @@ export function SettingsProvider({ children }) {
     }
   }, [settings, isHydrated]);
 
-  const updateSettings = useCallback((setting, value) => {
+  const updateDrillSetting = useCallback((setting, value) => {
     setSettings((prev) => ({
       ...prev,
       customDrill: {
@@ -70,7 +70,9 @@ export function SettingsProvider({ children }) {
   }, []);
 
   return (
-    <SettingsContext.Provider value={{ settings, updateSettings, isHydrated }}>
+    <SettingsContext.Provider
+      value={{ settings, updateDrillSetting, isHydrated }}
+    >
       {children}
     </SettingsContext.Provider>
   );
