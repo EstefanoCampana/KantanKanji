@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Loading from "../Loading";
 import Question from "../Question";
-import { shuffleArray } from "@/utils/functions";
+import { filterKana, shuffleArray } from "@/utils/functions";
 import {
   getHiragana,
   getKana,
@@ -35,7 +35,7 @@ export default function KanaDrill({ kana }) {
   const { updateBestTime, getBestTime } = useBestTimes();
   const { settings } = useSettings();
 
-  const { kanaType, kanaRow, kanaCategory } = settings.customDrill;
+  const { kanaTypes, kanaRows, kanaCategories } = settings.customDrill;
 
   // Initialize kana
   useEffect(() => {
@@ -48,8 +48,17 @@ export default function KanaDrill({ kana }) {
           const data = await getKatakana();
           setKanaArray(data);
         } else if (kana === "custom") {
-          const data = await getKana(kanaType);
-          setKanaArray(data);
+          const results = await Promise.all(
+            kanaTypes.map((type) => getKana(type)),
+          );
+          const allKana = results.flat();
+          setKanaArray(filterKana(allKana, settings.customDrill));
+          console.log("Fetched records:", allKana.length);
+          console.log("First record:", allKana[0]);
+          console.log(
+            "Filtered records:",
+            filterKana(allKana, settings.customDrill).length,
+          );
         }
       } catch (error) {
         console.error("Failed to load kana:", error);
@@ -58,7 +67,7 @@ export default function KanaDrill({ kana }) {
       }
     };
     loadKana();
-  }, [kana, kanaType, kanaRow, kanaCategory]);
+  }, [kana, kanaTypes, kanaRows, kanaCategories, settings]);
 
   const initializeRound = useCallback(() => {
     setShuffledKana(shuffleArray(kanaArray));
@@ -66,6 +75,7 @@ export default function KanaDrill({ kana }) {
     setInputText("");
     setGameState(null);
     startTimer();
+    console.log(kanaArray);
   }, [kanaArray, startTimer]);
 
   const finalizeRound = () => {

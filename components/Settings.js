@@ -8,6 +8,14 @@ import { useSettings } from "@/app/context/SettingsContext";
 
 const OPTIONS = [
   {
+    label: "",
+    setting: "quick",
+    values: [
+      { label: "Select All", value: "selectAll" },
+      { label: "Deselect All", value: "deselectAll" },
+    ],
+  },
+  {
     label: "Kana Type",
     setting: "kanaTypes",
     values: [
@@ -37,23 +45,51 @@ const OPTIONS = [
     values: [
       { label: "Gojuon", value: "gojuon" },
       { label: "Dakuon", value: "dakuon" },
-      { label: "Han-Dakuon", value: "han-dakuon" },
+      { label: "Han Dakuon", value: "handakuon" },
       { label: "Yoon", value: "yoon" },
     ],
   },
   {
-    label: "Quick Access",
-    setting: "quick",
-    values: [
-      { label: "Select All", value: "all" },
-      { label: "Deselect All", value: "delAll" },
-      { label: "Start", value: "Start" },
-    ],
+    label: "",
+    setting: "start",
+    values: [{ label: "Start", value: "start" }],
   },
 ];
 
+const CATEGORY_ROWS = {
+  gojuon: [
+    "arow",
+    "karow",
+    "sarow",
+    "tarow",
+    "narow",
+    "harow",
+    "marow",
+    "yarow",
+    "rarow",
+    "warow",
+  ],
+  dakuon: ["karow", "sarow", "tarow", "harow"],
+  handakuon: ["harow"],
+  yoon: ["karow", "sarow", "tarow", "narow", "harow", "marow", "rarow"],
+};
+
+function getAvailableRows(selectedCategories) {
+  const availableRows = new Set();
+
+  selectedCategories.forEach((category) => {
+    CATEGORY_ROWS[category]?.forEach((row) => {
+      availableRows.add(row);
+    });
+  });
+
+  return availableRows;
+}
+
 export default function Settings() {
-  const { selected, moveSelection } = useMenuNavigation(OPTIONS.length);
+  const { selected, setSelected, moveSelection } = useMenuNavigation(
+    OPTIONS.length,
+  );
 
   const currentOption = OPTIONS[selected];
 
@@ -65,7 +101,10 @@ export default function Settings() {
 
   const { currentRoute, navigate } = useNavigation();
 
-  const { settings, toggleDrillSetting, isHydrated } = useSettings();
+  const { settings, toggleDrillSetting, updateDrillSettings, isHydrated } =
+    useSettings();
+
+  const availableRows = getAvailableRows(settings.customDrill.kanaCategories);
 
   const moveSection = useCallback(
     (direction) => {
@@ -73,6 +112,57 @@ export default function Settings() {
       setSelectedButton(0);
     },
     [moveSelection, setSelectedButton],
+  );
+
+  const selectAllSettings = useCallback(() => {
+    updateDrillSettings({
+      kanaTypes: ["hiragana", "katakana"],
+      kanaRows: [
+        "arow",
+        "karow",
+        "sarow",
+        "tarow",
+        "narow",
+        "harow",
+        "marow",
+        "yarow",
+        "rarow",
+        "warow",
+      ],
+      kanaCategories: ["gojuon", "dakuon", "handakuon", "yoon"],
+    });
+  }, [updateDrillSettings]);
+
+  const deselectAllSettings = useCallback(() => {
+    updateDrillSettings({
+      kanaTypes: ["hiragana"],
+      kanaRows: ["arow"],
+      kanaCategories: ["gojuon"],
+    });
+  }, [updateDrillSettings]);
+
+  const startDrill = useCallback(() => {
+    navigate("customDrillGame");
+  }, [navigate]);
+
+  const handleButtonAction = useCallback(
+    (option, button) => {
+      switch (button.value) {
+        case "selectAll":
+          selectAllSettings();
+          break;
+        case "deselectAll":
+          deselectAllSettings();
+          break;
+        case "start":
+          startDrill();
+          break;
+        default:
+          toggleDrillSetting(option.setting, button.value);
+          break;
+      }
+    },
+    [toggleDrillSetting, selectAllSettings, deselectAllSettings, startDrill],
   );
 
   const handleKeyboard = useCallback(
@@ -95,9 +185,9 @@ export default function Settings() {
           break;
 
         case "enter":
-          toggleDrillSetting(
-            currentOption.setting,
-            currentOption.values[selectedButton].value,
+          handleButtonAction(
+            currentOption,
+            currentOption.values[selectedButton],
           );
           break;
 
@@ -109,18 +199,15 @@ export default function Settings() {
       currentOption,
       selectedButton,
       moveButtonSelection,
-      toggleDrillSetting,
+      handleButtonAction,
       moveSection,
     ],
   );
 
   useKeyboard(handleKeyboard, currentRoute === "customDrill");
 
-  const startDrill = () => {
-    navigate("customDrillGame");
-  };
-
   if (!isHydrated) return null;
+
   return (
     <PageLayout title={"Customize Round"}>
       <div className="flex flex-col flex-1 items-center text-center gap-2 my-auto">
@@ -128,27 +215,36 @@ export default function Settings() {
           <div
             key={option.setting}
             className={`w-full ${
-              selected === id ? "bg-amber-100" : "bg-white"
+              selected === id
+                ? "bg-amber-100 ring ring-black"
+                : "bg-transparent"
             } text-black`}
           >
             <p className="text-xl font-semibold">{option.label}</p>
             <div className="flex flex-wrap justify-center gap-2 p-2">
-              {option.values.map((button, index) => {
+              {(option.setting === "kanaRows"
+                ? option.values.filter((button) =>
+                    availableRows.has(button.value),
+                  )
+                : option.values
+              ).map((button, index) => {
                 const isSelected = settings.customDrill[
                   option.setting
                 ]?.includes(button.value);
 
                 const isFocused = selected === id && selectedButton === index;
+                const start = button.value === "start";
                 return (
                   <button
                     key={button.value}
                     type="button"
                     onClick={() => {
-                      toggleDrillSetting(option.setting, button.value);
+                      setSelected(id);
+                      setSelectedButton(index);
+                      handleButtonAction(option, button);
                     }}
-                    className={`p-2 border border-black ${
-                      isSelected ? "bg-amber-400 font-bold" : "bg-white"
-                    } ${isFocused ? "ring-4 ring-blue-500" : ""}`}
+                    className={`p-2 border border-black ${start ? "bg-black text-white" : isSelected ? "bg-amber-400 font-bold" : "bg-white text-black"}
+                    ${isFocused ? "ring-4 ring-blue-500" : ""}`}
                   >
                     {button.label}
                   </button>
@@ -157,14 +253,6 @@ export default function Settings() {
             </div>
           </div>
         ))}
-        {/*<div className="mt-auto">
-          <button
-            onClick={startDrill}
-            className="p-2 w-full bg-black text-center font-bold text-white"
-          >
-            Start
-          </button>
-        </div>*/}
       </div>
     </PageLayout>
   );

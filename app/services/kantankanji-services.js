@@ -16,9 +16,16 @@ export async function getKanji() {
   }
 }
 
-export async function getKana(kanaType, kanaRow, kanaCategory) {
+export async function getKana(kanaType) {
   try {
     const getItemsReference = collection(db, "kana");
+    const querySnapshot = await getDocs(getItemsReference);
+    return querySnapshot.docs
+      .map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+      .filter((item) => item.category.startsWith(kanaType.slice(0, 4)));
   } catch (error) {
     console.log(error);
   }

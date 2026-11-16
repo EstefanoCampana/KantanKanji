@@ -69,6 +69,16 @@ export function SettingsProvider({ children }) {
     }));
   }, []);
 
+  const updateDrillSettings = useCallback((newSettings) => {
+    setSettings((prev) => ({
+      ...prev,
+      customDrill: {
+        ...prev.customDrill,
+        ...newSettings,
+      },
+    }));
+  }, []);
+
   const toggleDrillSetting = useCallback((setting, value) => {
     const allowedSettings = ["kanaTypes", "kanaRows", "kanaCategories"];
 
@@ -96,7 +106,13 @@ export function SettingsProvider({ children }) {
 
   return (
     <SettingsContext.Provider
-      value={{ settings, updateDrillSetting, toggleDrillSetting, isHydrated }}
+      value={{
+        settings,
+        updateDrillSetting,
+        updateDrillSettings,
+        toggleDrillSetting,
+        isHydrated,
+      }}
     >
       {children}
     </SettingsContext.Provider>
