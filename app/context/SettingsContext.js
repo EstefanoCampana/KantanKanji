@@ -14,9 +14,9 @@ const STORAGE_KEY = "kantankanji-settings";
 
 const INITIAL_SETTINGS = {
   customDrill: {
-    kanaType: "hiragana",
-    kanaRow: "あ-row",
-    kanaCategory: "gojuon",
+    kanaTypes: ["hiragana"],
+    kanaRows: ["arow"],
+    kanaCategories: ["gojuon"],
   },
 };
 
@@ -69,9 +69,34 @@ export function SettingsProvider({ children }) {
     }));
   }, []);
 
+  const toggleDrillSetting = useCallback((setting, value) => {
+    const allowedSettings = ["kanaTypes", "kanaRows", "kanaCategories"];
+
+    if (!allowedSettings.includes(setting)) return;
+
+    setSettings((prev) => {
+      const currentValues = prev.customDrill[setting];
+
+      if (currentValues.includes(value) && currentValues.length === 1)
+        return prev;
+
+      const updatedValues = currentValues.includes(value)
+        ? currentValues.filter((item) => item !== value)
+        : [...currentValues, value];
+
+      return {
+        ...prev,
+        customDrill: {
+          ...prev.customDrill,
+          [setting]: updatedValues,
+        },
+      };
+    });
+  }, []);
+
   return (
     <SettingsContext.Provider
-      value={{ settings, updateDrillSetting, isHydrated }}
+      value={{ settings, updateDrillSetting, toggleDrillSetting, isHydrated }}
     >
       {children}
     </SettingsContext.Provider>

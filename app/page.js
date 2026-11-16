@@ -13,6 +13,7 @@ import { useMenuNavigation } from "./hooks/useMenuNavigation";
 import BackButton from "@/components/BackButton";
 import KanaDrill from "@/components/KanaDrill/KanaDrill";
 import KanaDrillMenu from "@/components/KanaDrill/KanaDrillMenu";
+import Settings from "@/components/Settings";
 
 const OPTIONS = ["Start", "Settings", "Help"];
 
@@ -145,6 +146,12 @@ export default function Home() {
         )}
 
         {currentRoute === "customDrill" && (
+          <div className="flex flex-col flex-1 min-h-0">
+            <Settings />
+          </div>
+        )}
+
+        {currentRoute === "customDrillGame" && (
           <div className="flex flex-col flex-1 min-h-0">
             <KanaDrill kana={"custom"} />
           </div>

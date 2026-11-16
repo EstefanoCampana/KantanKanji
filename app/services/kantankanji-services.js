@@ -16,15 +16,9 @@ export async function getKanji() {
   }
 }
 
-export async function getKana() {
+export async function getKana(kanaType, kanaRow, kanaCategory) {
   try {
     const getItemsReference = collection(db, "kana");
-    const getItemsQuery = query(getItemsReference);
-    const querySnapshot = await getDocs(getItemsQuery);
-    return querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
   } catch (error) {
     console.log(error);
   }

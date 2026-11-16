@@ -9,7 +9,7 @@ import { useSettings } from "@/app/context/SettingsContext";
 const OPTIONS = [
   {
     label: "Kana Type",
-    setting: "kanaType",
+    setting: "kanaTypes",
     values: [
       { label: "Hiragana", value: "hiragana" },
       { label: "Katakana", value: "katakana" },
@@ -17,28 +17,37 @@ const OPTIONS = [
   },
   {
     label: "Kana Row",
-    setting: "kanaRow",
+    setting: "kanaRows",
     values: [
-      { label: "あ-row", value: "あ-row" },
-      { label: "か-row", value: "か-row" },
-      { label: "さ-row", value: "さ-row" },
-      { label: "た-row", value: "た-row" },
-      { label: "な-row", value: "な-row" },
-      { label: "は-row", value: "は-row" },
-      { label: "ま-row", value: "ま-row" },
-      { label: "や-row", value: "や-row" },
-      { label: "ら-row", value: "ら-row" },
-      { label: "わ-row", value: "わ-row" },
+      { label: "あ-row", value: "arow" },
+      { label: "か-row", value: "karow" },
+      { label: "さ-row", value: "sarow" },
+      { label: "た-row", value: "tarow" },
+      { label: "な-row", value: "narow" },
+      { label: "は-row", value: "harow" },
+      { label: "ま-row", value: "marow" },
+      { label: "や-row", value: "yarow" },
+      { label: "ら-row", value: "rarow" },
+      { label: "わ-row", value: "warow" },
     ],
   },
   {
     label: "Kana Category",
-    setting: "kanaCategory",
+    setting: "kanaCategories",
     values: [
       { label: "Gojuon", value: "gojuon" },
       { label: "Dakuon", value: "dakuon" },
       { label: "Han-Dakuon", value: "han-dakuon" },
       { label: "Yoon", value: "yoon" },
+    ],
+  },
+  {
+    label: "Quick Access",
+    setting: "quick",
+    values: [
+      { label: "Select All", value: "all" },
+      { label: "Deselect All", value: "delAll" },
+      { label: "Start", value: "Start" },
     ],
   },
 ];
@@ -54,9 +63,9 @@ export default function Settings() {
     moveSelection: moveButtonSelection,
   } = useMenuNavigation(currentOption.values.length);
 
-  const { currentRoute } = useNavigation();
+  const { currentRoute, navigate } = useNavigation();
 
-  const { settings, updateDrillSetting, isHydrated } = useSettings();
+  const { settings, toggleDrillSetting, isHydrated } = useSettings();
 
   const moveSection = useCallback(
     (direction) => {
@@ -86,7 +95,7 @@ export default function Settings() {
           break;
 
         case "enter":
-          updateDrillSetting(
+          toggleDrillSetting(
             currentOption.setting,
             currentOption.values[selectedButton].value,
           );
@@ -100,12 +109,16 @@ export default function Settings() {
       currentOption,
       selectedButton,
       moveButtonSelection,
-      updateDrillSetting,
+      toggleDrillSetting,
       moveSection,
     ],
   );
 
   useKeyboard(handleKeyboard, currentRoute === "customDrill");
+
+  const startDrill = () => {
+    navigate("customDrillGame");
+  };
 
   if (!isHydrated) return null;
   return (
@@ -121,17 +134,18 @@ export default function Settings() {
             <p className="text-xl font-semibold">{option.label}</p>
             <div className="flex flex-wrap justify-center gap-2 p-2">
               {option.values.map((button, index) => {
-                const isSelected =
-                  settings.customDrill[option.setting] === button.value;
+                const isSelected = settings.customDrill[
+                  option.setting
+                ]?.includes(button.value);
 
                 const isFocused = selected === id && selectedButton === index;
                 return (
                   <button
                     key={button.value}
                     type="button"
-                    onClick={() =>
-                      updateDrillSetting(option.setting, button.value)
-                    }
+                    onClick={() => {
+                      toggleDrillSetting(option.setting, button.value);
+                    }}
                     className={`p-2 border border-black ${
                       isSelected ? "bg-amber-400 font-bold" : "bg-white"
                     } ${isFocused ? "ring-4 ring-blue-500" : ""}`}
@@ -143,11 +157,14 @@ export default function Settings() {
             </div>
           </div>
         ))}
-        <div className="mt-auto">
-          <button className="p-2 w-full bg-black text-center font-bold text-white">
+        {/*<div className="mt-auto">
+          <button
+            onClick={startDrill}
+            className="p-2 w-full bg-black text-center font-bold text-white"
+          >
             Start
           </button>
-        </div>
+        </div>*/}
       </div>
     </PageLayout>
   );

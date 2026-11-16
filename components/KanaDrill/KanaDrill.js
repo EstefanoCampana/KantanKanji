@@ -4,11 +4,16 @@ import { useState, useEffect, useCallback } from "react";
 import Loading from "../Loading";
 import Question from "../Question";
 import { shuffleArray } from "@/utils/functions";
-import { getHiragana, getKatakana } from "@/app/services/kantankanji-services";
+import {
+  getHiragana,
+  getKana,
+  getKatakana,
+} from "@/app/services/kantankanji-services";
 import { useTimer } from "@/app/hooks/useTimer";
 import RoundEndScreen from "../RoundEndScreen";
 import { useBestTimes } from "@/app/context/BestTimeContext";
 import Settings from "../Settings";
+import { useSettings } from "@/app/context/SettingsContext";
 
 export default function KanaDrill({ kana }) {
   //Array gotten from the api call.
@@ -28,6 +33,9 @@ export default function KanaDrill({ kana }) {
 
   const { totalTime, startTimer, stopTimer } = useTimer();
   const { updateBestTime, getBestTime } = useBestTimes();
+  const { settings } = useSettings();
+
+  const { kanaType, kanaRow, kanaCategory } = settings.customDrill;
 
   // Initialize kana
   useEffect(() => {
@@ -39,6 +47,9 @@ export default function KanaDrill({ kana }) {
         } else if (kana === "katakana") {
           const data = await getKatakana();
           setKanaArray(data);
+        } else if (kana === "custom") {
+          const data = await getKana(kanaType);
+          setKanaArray(data);
         }
       } catch (error) {
         console.error("Failed to load kana:", error);
@@ -47,7 +58,7 @@ export default function KanaDrill({ kana }) {
       }
     };
     loadKana();
-  }, [kana]);
+  }, [kana, kanaType, kanaRow, kanaCategory]);
 
   const initializeRound = useCallback(() => {
     setShuffledKana(shuffleArray(kanaArray));
@@ -80,19 +91,18 @@ export default function KanaDrill({ kana }) {
   };
   // Initialize round.
   useEffect(() => {
+    if (isLoading || kanaArray.length === 0) return;
+
     const init = () => {
       initializeRound();
     };
     init();
-  }, [initializeRound]);
+  }, [initializeRound, isLoading, kanaArray]);
 
   if (isLoading) {
     return <Loading />;
   }
 
-  if (kana === "custom") {
-    return <Settings />;
-  }
   return (
     <>
       {gameState == null ? (
