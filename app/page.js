@@ -9,6 +9,7 @@ import ParticlePractice from "@/components/ParticlePractice";
 import { useNavigation } from "./context/NavigationContext";
 import { useKeyboard } from "./context/KeyboardContext";
 import { useMenuNavigation } from "./hooks/useMenuNavigation";
+import { useMediaQuery } from "@/components/UseMediaQuery";
 
 import BackButton from "@/components/BackButton";
 import KanaDrill from "@/components/KanaDrill/KanaDrill";
@@ -19,6 +20,7 @@ const OPTIONS = ["Start", "Settings", "Help"];
 
 export default function Home() {
   const { currentRoute, navigate } = useNavigation();
+  const small = useMediaQuery("(max-width: 768px)");
 
   const { selected, setSelected, moveSelection } = useMenuNavigation(
     OPTIONS.length,
@@ -135,12 +137,14 @@ export default function Home() {
 
         {currentRoute === "hiragana" && (
           <div className="flex flex-col flex-1 min-h-0">
+            {small && <BackButton />}
             <KanaDrill kana={"hiragana"} />
           </div>
         )}
 
         {currentRoute === "katakana" && (
           <div className="flex flex-col flex-1 min-h-0">
+            {small && <BackButton />}
             <KanaDrill kana={"katakana"} />
           </div>
         )}
@@ -153,6 +157,7 @@ export default function Home() {
 
         {currentRoute === "customDrillGame" && (
           <div className="flex flex-col flex-1 min-h-0">
+            {small && <BackButton />}
             <KanaDrill kana={"custom"} />
           </div>
         )}

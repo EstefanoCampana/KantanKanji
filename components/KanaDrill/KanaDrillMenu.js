@@ -11,8 +11,8 @@ import { useBestTimes } from "@/app/context/BestTimeContext";
 const LEVELS = ["Hiragana", "Katakana", "Custom"];
 const THUMBNAILS = [
   "/kanaDrillThumb.png",
-  "/placeholder.png",
-  "/placeholder.png",
+  "/katakanaDrill.png",
+  "/customDrill.png",
 ];
 const LEVELS_ROUTE = {
   Hiragana: "hiragana",
