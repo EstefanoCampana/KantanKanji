@@ -13,6 +13,9 @@ const SettingsContext = createContext(null);
 const STORAGE_KEY = "kantankanji-settings";
 
 const INITIAL_SETTINGS = {
+  general: {
+    furigana: true,
+  },
   customDrill: {
     kanaTypes: ["hiragana"],
     kanaRows: ["arow"],

@@ -5,6 +5,7 @@ import { useKeyboard } from "@/app/context/KeyboardContext";
 import { useNavigation } from "@/app/context/NavigationContext";
 import { useCallback } from "react";
 import { useSettings } from "@/app/context/SettingsContext";
+import { useMediaQuery } from "./UseMediaQuery";
 
 const OPTIONS = [
   {
@@ -106,6 +107,8 @@ export default function Settings() {
 
   const availableRows = getAvailableRows(settings.customDrill.kanaCategories);
 
+  const small = useMediaQuery("(max-width: 768px)");
+
   const moveSection = useCallback(
     (direction) => {
       moveSelection(direction);
@@ -140,6 +143,18 @@ export default function Settings() {
       kanaCategories: ["gojuon"],
     });
   }, [updateDrillSettings]);
+
+  const VISIBLE_COUNT = 5;
+
+  const visibleStart = Math.min(
+    Math.max(selected - VISIBLE_COUNT + 1, 0),
+    OPTIONS.length - VISIBLE_COUNT,
+  );
+
+  const visibleOptions = OPTIONS.slice(
+    visibleStart,
+    visibleStart + VISIBLE_COUNT,
+  );
 
   const startDrill = useCallback(() => {
     navigate("customDrillGame");
@@ -210,49 +225,55 @@ export default function Settings() {
 
   return (
     <PageLayout title={"Customize Round"}>
-      <div className="flex flex-col flex-1 items-center text-center gap-2 my-auto">
-        {OPTIONS.map((option, id) => (
-          <div
-            key={option.setting}
-            className={`w-full ${
-              selected === id
-                ? "bg-amber-100 ring ring-black"
-                : "bg-transparent"
-            } text-black`}
-          >
-            <p className="text-xl font-semibold">{option.label}</p>
-            <div className="flex flex-wrap justify-center gap-2 p-2">
-              {(option.setting === "kanaRows"
-                ? option.values.filter((button) =>
-                    availableRows.has(button.value),
-                  )
-                : option.values
-              ).map((button, index) => {
-                const isSelected = settings.customDrill[
-                  option.setting
-                ]?.includes(button.value);
+      <div className="flex flex-col flex-1 items-center text-center gap-2 overflow-y-hidden">
+        {visibleOptions.map((option, index) => {
+          const id = visibleStart + index;
 
-                const isFocused = selected === id && selectedButton === index;
-                const start = button.value === "start";
-                return (
-                  <button
-                    key={button.value}
-                    type="button"
-                    onClick={() => {
-                      setSelected(id);
-                      setSelectedButton(index);
-                      handleButtonAction(option, button);
-                    }}
-                    className={`p-2 border border-black ${start ? "bg-black text-white" : isSelected ? "bg-amber-400 font-bold" : "bg-white text-black"}
+          return (
+            <div
+              key={option.setting}
+              className={`flex flex-col flex-1 w-full h-full ${
+                selected === id
+                  ? "bg-amber-100 ring ring-black"
+                  : "bg-transparent"
+              } text-black`}
+            >
+              <p className="text-xl font-semibold">{option.label}</p>
+              <div
+                className={`${small ? "grid grid-cols-2" : "flex flex-row"} h-full items-center gap-2 p-2`}
+              >
+                {(option.setting === "kanaRows"
+                  ? option.values.filter((button) =>
+                      availableRows.has(button.value),
+                    )
+                  : option.values
+                ).map((button, index) => {
+                  const isSelected = settings.customDrill[
+                    option.setting
+                  ]?.includes(button.value);
+
+                  const isFocused = selected === id && selectedButton === index;
+                  const start = button.value === "start";
+                  return (
+                    <button
+                      key={button.value}
+                      type="button"
+                      onClick={() => {
+                        setSelected(id);
+                        setSelectedButton(index);
+                        handleButtonAction(option, button);
+                      }}
+                      className={`p-2 border border-black h-full w-full ${start ? "col-span-2 bg-black text-white" : isSelected ? "bg-amber-400 font-bold" : "bg-white text-black"}
                     ${isFocused ? "ring-4 ring-blue-500" : ""}`}
-                  >
-                    {button.label}
-                  </button>
-                );
-              })}
+                    >
+                      {button.label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </PageLayout>
   );

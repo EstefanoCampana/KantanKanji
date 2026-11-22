@@ -2,6 +2,7 @@
 import { useCallback } from "react";
 import Help from "@/components/Help";
 import Game from "@/components/Games";
+import Settings from "@/components/Settings";
 
 import SentenceStructure from "@/components/SentenceStructure";
 import ParticlePractice from "@/components/ParticlePractice";
@@ -14,7 +15,6 @@ import { useMediaQuery } from "@/components/UseMediaQuery";
 import BackButton from "@/components/BackButton";
 import KanaDrill from "@/components/KanaDrill/KanaDrill";
 import KanaDrillMenu from "@/components/KanaDrill/KanaDrillMenu";
-import Settings from "@/components/Settings";
 
 const OPTIONS = ["Start", "Settings", "Help"];
 
@@ -66,22 +66,15 @@ export default function Home() {
   useKeyboard(handleKeyboard, currentRoute === "home");
   return (
     <main className="flex flex-col items-center min-h-screen p-2 overflow-hidden">
-      <div className="flex flex-1 w-full flex-col bg-amber-50 p-10 rounded-2xl">
+      <div className="flex flex-1 w-full flex-col bg-amber-50 p-10 rounded-2xl overflow-hidden">
         {currentRoute === "home" && (
-          <div className="flex flex-1 flex-col items-center">
-            <div className="flex flex-col md:flex-row text-center">
-              <div className="flex flex-col text-center font-light">
-                <p className="text-sm text-amber-50">welcome to</p>
-                <p className="text-4xl text-black">Welcome to</p>
-              </div>
-              <div className="flex flex-col text-center">
-                <p className="text-sm font-light text-black tracking-[8px]">
-                  かんたんかんじ
-                </p>
-                <p className="text-4xl text-black font-bold ml-2">簡単漢字！</p>
-              </div>
+          <div className="flex flex-1 flex-col items-center mb-auto">
+            <div className="flex flex-row text-center">
+              <p className="text-4xl text-black">Welcome to&nbsp;</p>
+              <Furigana kana="簡単" reading="かんたん" />
+              <Furigana kana="漢字" reading="かんじ" />
             </div>
-            <div className="w-full md:w-1/2 my-auto">
+            <div className="w-full md:w-1/2 mt-auto">
               {OPTIONS.map((option, id) => (
                 <Option
                   key={id}
@@ -96,14 +89,13 @@ export default function Home() {
             </div>
             {/* Bottom instructions */}
             <div className="flex w-full mt-auto justify-between text-amber-50 md:text-black text-lg">
-              <div className="flex gap-4">
-                <p>↑ / ↓ - Move</p>
+              <div className="flex flex-col">
+                <p>← / → / ↑ / ↓ - Move</p>
                 <p>Enter - Select</p>
-              </div>
-
-              <div>
                 <p>Left Click - Select</p>
               </div>
+
+              <div></div>
             </div>
           </div>
         )}
@@ -117,6 +109,13 @@ export default function Home() {
             <Game />
           </div>
         </div>
+
+        {currentRoute === "settings" && (
+          <div className="flex flex-col flex-1">
+            <BackButton />
+            <Settings />
+          </div>
+        )}
 
         {currentRoute === "help" && (
           <div className="flex flex-col flex-1">
@@ -151,6 +150,7 @@ export default function Home() {
 
         {currentRoute === "customDrill" && (
           <div className="flex flex-col flex-1 min-h-0">
+            {small && <BackButton />}
             <Settings />
           </div>
         )}
@@ -176,10 +176,21 @@ export default function Home() {
 function Option({ text, selected = false, action }) {
   return (
     <button
-      className={`text-black border border-black p-4 rounded-xl my-2 w-full text-center ${selected ? `bg-green-300` : `bg-gray-300`}`}
+      className={`text-black border border-black p-6 my-2 w-full text-center ${selected ? `bg-white ring-4 ring-cyan-600` : `bg-gray-300 text-black`}`}
       onClick={action}
     >
       {text}
     </button>
+  );
+}
+
+function Furigana({ kana, reading }) {
+  return (
+    <div className="flex-1 relative">
+      <p className="text-sm font-light text-black tracking-[2px] absolute left-0 right-0 top-[-20]">
+        {reading}
+      </p>
+      <p className="text-4xl text-black font-bold">{kana}</p>
+    </div>
   );
 }

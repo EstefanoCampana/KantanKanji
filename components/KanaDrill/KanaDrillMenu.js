@@ -3,10 +3,11 @@
 import { useCallback } from "react";
 import { GameCard } from "../GameCard";
 import PageLayout from "../PageLayout";
-import { useKeyboard } from "@/app/context/KeyboardContext";
+import { useKeyboard, useSwipe } from "@/app/context/KeyboardContext";
 import { useMenuNavigation } from "@/app/hooks/useMenuNavigation";
 import { useNavigation } from "@/app/context/NavigationContext";
 import { useBestTimes } from "@/app/context/BestTimeContext";
+import { useMediaQuery } from "../UseMediaQuery";
 
 const LEVELS = ["Hiragana", "Katakana", "Custom"];
 const THUMBNAILS = [
@@ -27,6 +28,16 @@ export default function KanaDrillMenu() {
 
   const { bestTimes } = useBestTimes();
 
+  const small = useMediaQuery("(max-width: 768px)");
+
+  const cardsPerPage = small ? 1 : 3;
+  // Determine which page contains the selected game
+  const currentPage = Math.floor(selected / cardsPerPage);
+  // Determine the first game index on that page
+  const startIndex = currentPage * cardsPerPage;
+  // Get only the three games for the current page
+  const visibleLevels = LEVELS.slice(startIndex, startIndex + cardsPerPage);
+
   const selectLevel = useCallback(
     (level) => {
       const route = LEVELS_ROUTE[level];
@@ -38,6 +49,13 @@ export default function KanaDrillMenu() {
     [navigate],
   );
 
+  const handleNavigation = useCallback(
+    (direction) => {
+      moveSelection(direction);
+    },
+    [moveSelection],
+  );
+
   const handleKeyboard = useCallback(
     (event) => {
       switch (event.key.toLowerCase()) {
@@ -46,32 +64,41 @@ export default function KanaDrillMenu() {
           break;
 
         case "arrowleft":
-          moveSelection("left");
+          handleNavigation("left");
           break;
 
         case "arrowright":
-          moveSelection("right");
+          handleNavigation("right");
           break;
 
         default:
           break;
       }
     },
-    [selected, selectLevel, moveSelection],
+    [selected, selectLevel, handleNavigation],
+  );
+
+  const handleSwipe = useCallback(
+    (direction) => {
+      handleNavigation(direction);
+    },
+    [handleNavigation],
   );
 
   useKeyboard(handleKeyboard, currentRoute === "drill");
+  useSwipe(handleSwipe, currentRoute === "drill");
 
   return (
-    <PageLayout title={"Kana Selection"}>
-      {LEVELS.map((level, id) => {
+    <PageLayout title={"Kana Selection"} small={small}>
+      {visibleLevels.map((level, id) => {
         const category = level.toLowerCase();
+        const actualIndex = startIndex + id;
 
         return (
           <GameCard
             key={id}
             action={() => selectLevel(level)}
-            selected={selected === id}
+            selected={selected === actualIndex}
             image={THUMBNAILS[id]}
             title={level}
             bestTime={bestTimes[category]}
