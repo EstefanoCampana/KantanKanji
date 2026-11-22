@@ -71,7 +71,7 @@ export function KeyboardProvider({ children }) {
     };
 
     const handleTouchEnd = (event) => {
-      if (!touchStart.current || !event.changedTouched?.length) {
+      if (!touchStart.current || !event.changedTouches?.length) {
         touchStart.current = null;
         return;
       }
@@ -90,7 +90,7 @@ export function KeyboardProvider({ children }) {
         return;
       }
 
-      const direction = deltaX < 0 ? "left" : "right";
+      const direction = deltaX < 0 ? "right" : "left";
 
       activeSwipeHandler.current?.(direction);
     };

@@ -99,7 +99,7 @@ export default function KanaDrillMenu() {
             key={id}
             action={() => selectLevel(level)}
             selected={selected === actualIndex}
-            image={THUMBNAILS[id]}
+            image={THUMBNAILS[actualIndex]}
             title={level}
             bestTime={bestTimes[category]}
           />
