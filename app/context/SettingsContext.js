@@ -14,7 +14,8 @@ const STORAGE_KEY = "kantankanji-settings";
 
 const INITIAL_SETTINGS = {
   general: {
-    furigana: true,
+    language: "english",
+    gameplay: "",
   },
   customDrill: {
     kanaTypes: ["hiragana"],
@@ -38,6 +39,10 @@ export function SettingsProvider({ children }) {
           setSettings({
             ...INITIAL_SETTINGS,
             ...parsed,
+            general: {
+              ...INITIAL_SETTINGS.general,
+              ...parsed.general,
+            },
             customDrill: {
               ...INITIAL_SETTINGS.customDrill,
               ...parsed.customDrill,

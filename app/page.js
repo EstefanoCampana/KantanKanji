@@ -2,7 +2,7 @@
 import { useCallback } from "react";
 import Help from "@/components/Help";
 import Game from "@/components/Games";
-import Settings from "@/components/Settings";
+import GeneralSettings from "@/components/GeneralSettings";
 
 import SentenceStructure from "@/components/SentenceStructure";
 import ParticlePractice from "@/components/ParticlePractice";
@@ -15,6 +15,7 @@ import { useMediaQuery } from "@/components/UseMediaQuery";
 import BackButton from "@/components/BackButton";
 import KanaDrill from "@/components/KanaDrill/KanaDrill";
 import KanaDrillMenu from "@/components/KanaDrill/KanaDrillMenu";
+import KanaDrillSettings from "@/components/KanaDrill/KanaDrillSettings";
 
 const OPTIONS = ["Start", "Settings", "Help"];
 
@@ -113,7 +114,7 @@ export default function Home() {
         {currentRoute === "settings" && (
           <div className="flex flex-col flex-1">
             <BackButton />
-            <Settings />
+            <GeneralSettings />
           </div>
         )}
 
@@ -151,7 +152,7 @@ export default function Home() {
         {currentRoute === "customDrill" && (
           <div className="flex flex-col flex-1 min-h-0">
             {small && <BackButton />}
-            <Settings />
+            <KanaDrillSettings />
           </div>
         )}
 
