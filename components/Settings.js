@@ -50,7 +50,12 @@ export default function Settings({
               <div
                 className={`${small ? "grid grid-cols-2" : "flex flex-row"} h-full items-center gap-2 p-2`}
               >
-                {option.values.map((button, index) => {
+                {(availableRows != null && option.setting === "kanaRows"
+                  ? option.values.filter((button) =>
+                      availableRows.has(button.value),
+                    )
+                  : option.values
+                ).map((button, index) => {
                   const isSelected = checkSettingsSource(
                     source,
                     settings,

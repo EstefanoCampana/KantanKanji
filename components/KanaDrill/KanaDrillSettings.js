@@ -222,6 +222,7 @@ export default function KanaDrillSettings() {
       options={OPTIONS}
       source="customDrill"
       settings={settings}
+      availableRows={availableRows}
       selectedSection={selected}
       selectedButton={selectedButton}
       small={small}
