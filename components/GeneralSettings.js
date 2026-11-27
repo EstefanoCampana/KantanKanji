@@ -25,6 +25,38 @@ const OPTIONS = [
       { label: "Input", value: "input" },
     ],
   },
+  {
+    label: "Gameplay",
+    setting: "gameplay2",
+    values: [
+      { label: "Furigana", value: "furigana" },
+      { label: "Input", value: "input" },
+    ],
+  },
+  {
+    label: "Gameplay",
+    setting: "gameplay3",
+    values: [
+      { label: "Furigana", value: "furigana" },
+      { label: "Input", value: "input" },
+    ],
+  },
+  {
+    label: "Gameplay",
+    setting: "gameplay4",
+    values: [
+      { label: "Furigana", value: "furigana" },
+      { label: "Input", value: "input" },
+    ],
+  },
+  {
+    label: "Gameplay",
+    setting: "gameplay5",
+    values: [
+      { label: "Furigana", value: "furigana" },
+      { label: "Input", value: "input" },
+    ],
+  },
 ];
 
 export default function GeneralSettings() {
@@ -42,8 +74,7 @@ export default function GeneralSettings() {
 
   const { currentRoute, navigate } = useNavigation();
 
-  const { settings, toggleDrillSetting, updateDrillSettings, isHydrated } =
-    useSettings();
+  const { settings, updateGeneralSetting, isHydrated } = useSettings();
 
   const small = useMediaQuery("(max-width: 768px)");
 
@@ -59,11 +90,11 @@ export default function GeneralSettings() {
     (option, button) => {
       switch (button.value) {
         default:
-          toggleDrillSetting(option.setting, button.value);
+          updateGeneralSetting(option.setting, button.value);
           break;
       }
     },
-    [toggleDrillSetting],
+    [updateGeneralSetting],
   );
 
   const buttonActions = (id, index, option, button) => {

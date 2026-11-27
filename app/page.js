@@ -1,5 +1,18 @@
 "use client";
+
 import { useCallback } from "react";
+import { useNavigation } from "./context/NavigationContext";
+import { useKeyboard } from "./context/KeyboardContext";
+import { useMenuNavigation } from "./hooks/useMenuNavigation";
+import { useMediaQuery } from "@/components/UseMediaQuery";
+import { useLanguage } from "./context/LanguageContext";
+import { useSettings } from "./context/SettingsContext";
+
+import BackButton from "@/components/BackButton";
+import KanaDrill from "@/components/KanaDrill/KanaDrill";
+import KanaDrillMenu from "@/components/KanaDrill/KanaDrillMenu";
+import KanaDrillSettings from "@/components/KanaDrill/KanaDrillSettings";
+
 import Help from "@/components/Help";
 import Game from "@/components/Games";
 import GeneralSettings from "@/components/GeneralSettings";
@@ -7,21 +20,16 @@ import GeneralSettings from "@/components/GeneralSettings";
 import SentenceStructure from "@/components/SentenceStructure";
 import ParticlePractice from "@/components/ParticlePractice";
 
-import { useNavigation } from "./context/NavigationContext";
-import { useKeyboard } from "./context/KeyboardContext";
-import { useMenuNavigation } from "./hooks/useMenuNavigation";
-import { useMediaQuery } from "@/components/UseMediaQuery";
-
-import BackButton from "@/components/BackButton";
-import KanaDrill from "@/components/KanaDrill/KanaDrill";
-import KanaDrillMenu from "@/components/KanaDrill/KanaDrillMenu";
-import KanaDrillSettings from "@/components/KanaDrill/KanaDrillSettings";
+import { Title } from "@/components/Text";
+import Loading from "@/components/Loading";
 
 const OPTIONS = ["Start", "Settings", "Help"];
 
 export default function Home() {
   const { currentRoute, navigate } = useNavigation();
   const small = useMediaQuery("(max-width: 768px)");
+  const { textArray } = useLanguage();
+  const { isHydrated } = useSettings();
 
   const { selected, setSelected, moveSelection } = useMenuNavigation(
     OPTIONS.length,
@@ -65,15 +73,14 @@ export default function Home() {
   );
 
   useKeyboard(handleKeyboard, currentRoute === "home");
+  if (!isHydrated) return <Loading />;
   return (
     <main className="flex flex-col items-center min-h-screen p-2 overflow-hidden">
       <div className="flex flex-1 w-full flex-col bg-amber-50 p-10 rounded-2xl overflow-hidden">
         {currentRoute === "home" && (
           <div className="flex flex-1 flex-col items-center mb-auto">
             <div className="flex flex-row text-center">
-              <p className="text-4xl text-black">Welcome to&nbsp;</p>
-              <Furigana kana="簡単" reading="かんたん" />
-              <Furigana kana="漢字" reading="かんじ" />
+              <Title text={textArray[0]} />
             </div>
             <div className="w-full md:w-1/2 mt-auto">
               {OPTIONS.map((option, id) => (
@@ -182,16 +189,5 @@ function Option({ text, selected = false, action }) {
     >
       {text}
     </button>
-  );
-}
-
-function Furigana({ kana, reading }) {
-  return (
-    <div className="flex-1 relative">
-      <p className="text-sm font-light text-black tracking-[2px] absolute left-0 right-0 top-[-20]">
-        {reading}
-      </p>
-      <p className="text-4xl text-black font-bold">{kana}</p>
-    </div>
   );
 }
