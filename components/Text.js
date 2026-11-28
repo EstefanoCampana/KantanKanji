@@ -3,7 +3,7 @@ import Furigana from "./Furigana";
 
 export function Title({ text }) {
   const { kanji, isJp, isHydrated } = useLanguage();
-  const regex = new RegExp("[一-龠]+|[々〆〤ヶ]", "g");
+  const regex = new RegExp("[一-龠]+|[々〆〤ヶ]", "u");
   const kana = text.match(regex)[0];
   const kanjiToRender = [];
 
@@ -25,7 +25,6 @@ export function Title({ text }) {
     }
     break;
   }
-  console.log(kanjiToRender);
 
   return (
     <>
@@ -41,8 +40,18 @@ export function Title({ text }) {
         })}
       <p className="text-4xl text-black">
         {isJp ? text.split(regex)[1] : text.slice(0, text.match(regex).index)}
+        &nbsp;
       </p>
-      {!isJp && <Furigana kana={kana} />}
+      {!isJp &&
+        kanjiToRender.map((kanji, id) => {
+          return (
+            <Furigana
+              key={id}
+              kana={kanji?.character}
+              reading={kanji?.reading}
+            />
+          );
+        })}
     </>
   );
 }

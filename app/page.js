@@ -28,8 +28,7 @@ const OPTIONS = ["Start", "Settings", "Help"];
 export default function Home() {
   const { currentRoute, navigate } = useNavigation();
   const small = useMediaQuery("(max-width: 768px)");
-  const { textArray } = useLanguage();
-  const { isHydrated } = useSettings();
+  const { textArray, isHydrated } = useLanguage();
 
   const { selected, setSelected, moveSelection } = useMenuNavigation(
     OPTIONS.length,
