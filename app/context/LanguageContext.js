@@ -20,6 +20,7 @@ export function LanguageProvider({ children }) {
   const [textArray, setTextArray] = useState([]);
   const [kanji, setKanji] = useState([]);
   const [isJp, setIsJp] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
     const loadKanji = async () => {
@@ -27,6 +28,8 @@ export function LanguageProvider({ children }) {
         setKanji(await getKanji());
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsHydrated(true);
       }
     };
     loadKanji();
@@ -46,7 +49,9 @@ export function LanguageProvider({ children }) {
   }, [settings]);
 
   return (
-    <LanguageContext.Provider value={{ textArray, setTextArray, kanji, isJp }}>
+    <LanguageContext.Provider
+      value={{ textArray, setTextArray, kanji, isJp, isHydrated }}
+    >
       {children}
     </LanguageContext.Provider>
   );
